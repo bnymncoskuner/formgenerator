@@ -1,0 +1,319 @@
+<section id="pageWfEdit">
+  <div>
+    <div class="container">
+      <section id="preview">
+        <div id="preview-content">
+					<div class="content-container">
+						<toaster-container
+              toaster-options="{ 'position-class': 'toast-top-full-width', 'extendedTimeout' : 500,'timeOut': 500 }">
+						</toaster-container>
+						<uib-tabset justified="true">
+							<uib-tab
+                select="vm.tabJustSelected(2)"
+                active="vm.tab.editTab.active"
+                heading="Edit /Create">
+                <div class="row">
+									<div
+										pageslide
+										ps-open="vm.editPanelModel.toggle"
+										ps-side="left"
+										ps-cloak="true"
+										ps-size="400px">
+										<left-panel
+                      close-edit-panel="vm.closeEditPanel()"
+                      save-from-edit-panel=vm.saveFromEditPanel()>
+                    </left-panel>
+									</div>
+									<div>
+										<div class="row advancedDemo">
+											<div ng-repeat="containers in vm.dragDropModel">
+												<div
+													dd-decor-drop-zone
+													dd-drop-zone-properties="vm.easyFormDragDropProperties.dropZoneConfig.decoration[$index]"
+													dd-drop-zone-verbose-mode="{{vm.easyFormDragDropProperties.dropZoneConfig.verboseMode}}"
+													dd-drop-zone-current-index="{{$index}}"
+													dd-drop-zone-add-new-line="vm.insertNewLine()">
+													<div 	class="dropzone box box-yellow">
+														<ul
+															dnd-list="containers"
+															dnd-allowed-types="['containerType']"
+															dnd-external-sources="true"
+															dnd-dragover="vm.dragoverCallbackContainer($parent.$parent.$index, $parent.$index, $index);"
+															dnd-drop="vm.dropCallback(event, index, item, external, type, 'containerType');"
+															class="row">
+															<li
+																ng-repeat="items in containers"
+																dnd-draggable="items"
+																dnd-type="'containerType'"
+																dnd-effect-allowed="copyMove"
+																dnd-dragstart=""
+																dnd-moved="containers.splice($index, 1);"
+																dnd-disable-if="$parent.$index == 0"
+																dnd-copied="">
+																<div
+																	class="container-element box box-blue"
+																	dd-decor-container
+																	dd-container-properties="vm.easyFormDragDropProperties.containerConfig.decoration[$index]"
+																	dd-container-is-collpased="vm.easyFormDragDropProperties.containerConfig.decoration[$index].isCollapsed"
+																	dd-container-verbose-mode="{{vm.easyFormDragDropProperties.containerConfig.verboseMode}}"
+																	dd-container-current-index="{{$parent.$index}}"
+																	dd-collapse-all="vm.collapseAllGroupControl(exceptThisOne)">
+																	<div dd-decor-include-container-here>
+																		<div
+																			dd-decor-line
+																			dd-line-verbose-mode="{{vm.easyFormDragDropProperties.containerConfig.verboseMode}}"
+																			dd-line-current-index="{{$index}}"
+																			dd-line-parent-index="{{$parent.$index}}"
+																			dd-remove-line="vm.removeThisLine($index)">
+																			<ul
+																				dnd-list="items"
+																				dnd-allowed-types="['itemType']"
+																				dnd-horizontal-list="true"
+																				dnd-external-sources="true"
+																				dnd-disable-if="items.length > 2"
+																				dnd-dragover="vm.dragoverCallbackItems($parent.$parent.$index, $parent.$index, $index, external);"
+																				dnd-drop="vm.dropCallbackItems(event, index, $index,$parent.$index, $parent.$parent.$index, $parent.$parent.$parent.$index, item, external, type, 'itemType');"
+																				class="itemlist"
+																				dd-content-counter
+																				dd-value-when-placeholder="dndPlaceholder"
+																				dd-value-when-dragging="dndDraggingSource"
+																				dd-full-model = "vm.dragDropModel"
+																				dd-content-counter-current-index="{{$index}}"
+																				dd-content-counter-parent-index="{{$parent.$index}}"
+																				dd-content-counter-force-css-refresh = "command.forceRefresh">
+																				<li
+																					ng-repeat="item in items"
+																					dnd-draggable="item"
+																					dnd-type="'itemType'"
+																					dnd-effect-allowed="copyMove"
+																					dnd-dragstart=""
+																					dnd-moved="vm.dndItemMoved($parent.$parent.$index, $parent.$index, $index);"
+																					dnd-copied=""
+																					dd-decor-item
+																					dd-item-verbose-mode="{{vm.easyFormDragDropProperties.itemConfig.verboseMode}}"
+																					dd-item-current-index="{{$index}}"
+																					dd-item-parent-index="{{$parent.$index}}"
+																					dd-item-parent-parent-index = "{{$parent.$parent.$index}}"
+																					dd-items-count="items.length"
+																					dd-item-css-class="{{item.cssClass}}">
+																					<div id="itemContent">
+																						<div
+																							dd-no-editable-control
+																							class="rightClickCtrl"
+																							ng-class="{rightClickCtrlSelected : item.rightCliked === true}"
+																							eda-set-right-clicked="vm.setRightClicked(previousState, item)"
+																							eda-right-click="vm.toggleEditPanel($event, $parent.$index, $index, item)"
+																							eda-selected-class="rightClickCtrlSelected"
+																							eda-is-selected="{{item.rightCliked}}"
+																							eda-right-click-col-index = "{{$parent.$parent.$index}}">
+																							<span ng-bind-html="item.label | trustThis"></span>
+																						</div>
+																					</div>
+																				</li>
+																			</ul>
+																		</div>
+																		<div class="clearfix"></div>
+																	</div>
+																</div>
+															</li>
+														</ul>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</uib-tab>
+							<uib-tab
+								select="vm.tabJustSelected(1)"
+								active="vm.tab.previewTab.active"
+								heading="Preview">
+								<div class="panel panel-default">
+									<div class="panel-body">
+										<form ng-submit="vm.onSubmit()">
+											<formly-form
+												id="previewFormlyForm"
+												model="vm.model"
+												fields="vm.wfFormFields">
+												<span class="pull-right">
+													<button
+														class="btn btn-primary"
+														type="submit">
+														{{vm.configuration.submitButtonText}}
+													</button>
+													<button
+														class="btn btn-primary"
+														type="cancel">
+														{{vm.configuration.cancelButtonText}}
+													</button>
+												</span>
+											</formly-form>
+										</form>
+									</div>
+								</div>
+								<div  class="panel panel-default">
+									<div
+										class="panel-heading heading-preview"
+										ng-click="vm.ihm.preview.customizeFormButtonsExpanded =!vm.ihm.preview.customizeFormButtonsExpanded">
+										<h3 class="panel-title">
+											<button class="btn btn-primary btn-xs" >
+												<i
+													class="fa"
+													ng-class="{'fa-angle-down':!vm.ihm.preview.customizeFormButtonsExpanded, 'fa-angle-up' : vm.ihm.preview.customizeFormButtonsExpanded}">
+												</i>
+											</button>
+											&nbsp;
+											<i class="fa fa-wrench"></i>
+											&nbsp;
+											Customize form buttons
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div uib-collapse="vm.ihm.preview.customizeFormButtonsExpanded">
+											<div class="row">
+												<div class="col-xs-6">
+													<div class="form-group">
+														<label
+															for="inputSubmitButtontext"
+															class=" greyText control-label">
+															Customize Submit button Text :
+														</label>
+														<div class="">
+															<input
+																type="text"
+																class="form-control"
+																id="inputSubmitButtontext"
+																placeholder="Submit button text"
+																ng-model="vm.configuration.submitButtonText">
+														</div>
+													</div>
+												</div>
+												<div class="col-xs-6">
+													<div class="form-group">
+														<label
+															for="inputCancelButtontext"
+															class=" greyText control-label">
+															Customize Cancel button Text :
+														</label>
+														<div class="">
+															<input
+																type="text"
+																class="form-control"
+																id="inputCancelButtontext"
+																placeholder="Cancel button text"
+																ng-model="vm.configuration.cancelButtonText">
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div
+										class="panel-heading heading-preview"
+										ng-click="vm.ihm.preview.formlyModelViewExpanded =!vm.ihm.preview.formlyModelViewExpanded">
+										<h3 class="panel-title">
+												<button class="btn btn-primary btn-xs">
+													<i
+														class="fa"
+														ng-class="{'fa-angle-down':!vm.ihm.preview.formlyModelViewExpanded, 'fa-angle-up' : vm.ihm.preview.formlyModelViewExpanded}">
+													</i>
+												</button>
+												&nbsp;
+												<i class="fa fa-eye"></i>
+												&nbsp;
+												DATA MODEL
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div uib-collapse="vm.ihm.preview.formlyModelViewExpanded">
+											<pre>
+												{{vm.model | json}}
+											</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div
+										class="panel-heading heading-preview"
+										ng-click="vm.ihm.preview.formlyFieldsViewExpanded =!vm.ihm.preview.formlyFieldsViewExpanded">
+										<h3 class="panel-title">
+											<button class="btn btn-primary btn-xs">
+												<i
+													class="fa"
+													ng-class="{'fa-angle-down':!vm.ihm.preview.formlyFieldsViewExpanded, 'fa-angle-up' : vm.ihm.preview.formlyFieldsViewExpanded}"></i>
+											</button>
+											&nbsp;
+											<i class="fa fa-eye"></i>
+											&nbsp;
+											FIELDS MODEL (ready to save to database one)
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div uib-collapse="vm.ihm.preview.formlyFieldsViewExpanded">
+											<pre>
+												{{vm.wfFormFieldsOnlyNeededProperties | json}}
+											</pre>
+										</div>
+									</div>
+								</div>
+								<div class="panel panel-default">
+									<div
+										class="panel-heading heading-preview"
+										ng-click="vm.ihm.preview.saveThisFormExpanded =!vm.ihm.preview.saveThisFormExpanded">
+										<h3 class="panel-title">
+											<button class="btn btn-primary btn-xs" >
+												<i
+													class="fa"
+													ng-class="{'fa-angle-down':!vm.ihm.preview.saveThisFormExpanded, 'fa-angle-up' : vm.ihm.preview.saveThisFormExpanded}"></i>
+											</button>
+											&nbsp;
+											<i class="fa fa-camera-retro"></i>
+											&nbsp;
+											Save this form
+										</h3>
+									</div>
+									<div class="panel-body">
+										<div uib-collapse="vm.ihm.preview.saveThisFormExpanded">
+											<div class="row">
+												<div class="col-xs-12">
+													<div class="form-group">
+														<label
+															for="inputNameFormtext"
+															class=" greyText control-label">
+															Name to this form :
+														</label>
+														<div class="">
+															<input
+																type="text"
+																class="form-control"
+																id="inputNameFormtext"
+																placeholder="Enter formName"
+																ng-model="vm.configuration.formName">
+														</div>
+													</div>
+												</div>
+											</div>
+											<button
+												class="btn btn-primary btn-block btn-lg"
+												ng-click="vm.saveThisForm()">
+												save this form
+											</button>
+										</div>
+									</div>
+								</div>
+							</uib-tab>
+						</uib-tabset>
+					</div>
+				</div>
+			</section>
+			<hr/>
+			<section>
+        <h6 class="text-right">
+          Easy form generator : {{vm.easyFormGeneratorVERSION}} — Erwan DATIN (MacKentoch)
+        </h6>
+			</section>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,11 @@
+node_modules/
+bower_components/
+jspm_packages/
+coverage/
+*.log
+
+build/
+
+.idea
+
+.DS_Store

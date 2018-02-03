@@ -1,0 +1,69 @@
+<div id="controlEditLeftPanel">
+	<div class="pull-right">
+		<button
+      type="button"
+      class="close"
+      ng-click="leftPanelCtrl.closeEditPanel()"
+      aria-label="Close">
+			<span
+        aria-hidden="true">
+        &times;
+      </span>
+		</button>
+	</div>
+	<div class="separator10pixel"></div>
+	<div ng-switch on="leftPanelCtrl.proxyModel.temporyConfig.selectedControl">
+		<div ng-switch-when="none">
+			<div class="row">
+				<div class="col-sm-12">
+					<h5 class="text-center texteRouge">
+            <i class="fa fa-arrow-up"></i>
+            &nbsp;
+            Select a control
+          </h5>
+				</div>
+			</div>
+		</div>
+		<div ng-switch-when="empty">
+			<left-panel-blank-control />
+		</div>
+		<div ng-switch-when="Header">
+			<left-panel-header-control />
+		</div>
+		<div ng-switch-when="Subtitle">
+			<left-panel-subtitle-control />
+		</div>
+		<div ng-switch-when="TextInput">
+			<left-panel-text-input-control />
+		</div>
+		<!-- <div ng-switch-when="Password">
+			<left-panel-password-control />
+		</div> -->
+		<div ng-switch-when="Date">
+			<left-panel-date-control />
+		</div>
+		<div ng-switch-when="Texarea">
+			<left-panel-textarea-control />
+		</div>
+		<div ng-switch-when="RichTextEditor">
+			<left-panel-rich-text-editor-control />
+		</div>
+		<div ng-switch-when="Radio">
+			<left-panel-radio-control />
+		</div>
+		<div ng-switch-when="Checkbox">
+			<left-panel-check-box-control />
+		</div>
+		<div ng-switch-when="BasicSelect">
+			<left-panel-basic-select-control />
+		</div>
+		<div ng-switch-when="GroupedSelect">
+			<left-panel-grouped-select-control />
+		</div>
+	</div>
+	<button
+    class="btn btn-primary btn-block pull-right"
+    ng-click="leftPanelCtrl.closeEditPanel()">
+    Close
+  </button>
+</div>

@@ -1,0 +1,183 @@
+<div class="modal-header">
+  <h3 class="modal-title greyText">
+    {{'SELECT_A_CTRL' | translate}}
+  </h3>
+</div>
+<div class="modal-body">
+  <hr/>
+  <div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <h5 class="greyText">
+        <i class="fa fa-filter"></i>
+        &nbsp;
+        {{'SELECT_CTRL_IN_LIST' | translate}} :
+      </h5>
+    </div>
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+      <edit-choose-control
+        model-nya-select="editControlModCtrl.modelNyaSelect"
+        nya-select-filtered="editControlModCtrl.nyaSelectFiltered"
+        select-this-control="editControlModCtrl.selectThisControl(optionId)">
+      </edit-choose-control>
+    </div>
+  </div>
+  <hr/>
+  <div ng-switch on="editControlModCtrl.nyaSelect.selectedControl">
+
+    <div ng-switch-when="none">
+      <div class="row">
+        <div class="col-sm-12">
+          <h5 class="text-center texteRouge">
+            <i class="fa fa-arrow-up"></i>
+            &nbsp; {{'SELECT_A_CTRL' | translate}}
+          </h5>
+        </div>
+      </div>
+    </div>
+
+    <div ng-switch-when="empty">
+      <edit-blank-control></edit-blank-control>
+    </div>
+
+    <div ng-switch-when="Header">
+      <edit-header-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-header-control>
+    </div>
+
+    <div ng-switch-when="Subtitle">
+      <edit-sub-title-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-sub-title-control>
+    </div>
+
+    <div ng-switch-when="NumberInput">
+      <edit-number-input-control nya-select="editControlModCtrl.nyaSelect">
+      </edit-number-input-control>
+    </div>
+
+    <div ng-switch-when="MultiSelect">
+      <edit-multi-select-control nya-select="editControlModCtrl.nyaSelect" multi-select-row-collection="editControlModCtrl.multiSelectRowCollection"
+        new-option-multi-select="editControlModCtrl.newOptionMultiSelect" new-group-multi-select="editControlModCtrl.newGroupMultiSelect"
+        group-select-group-click="editControlModCtrl.groupSelectGroupClick" multi-select-groups="editControlModCtrl.MultiSelectGroups"
+        add-new-option-multi-select="editControlModCtrl.addNewOptionMultiSelect()" add-new-group-to-multi-select="editControlModCtrl.addNewGroupToMultiSelect()"
+        up-this-multi-select-row="editControlModCtrl.upThisMultiSelectRow(index)" down-this-multi-select-row="editControlModCtrl.downThisMultiSelectRow(index)"
+        show-group-list-to-choose="editControlModCtrl.showGroupListToChoose()" remove-multi-select-row="editControlModCtrl.removeMultiSelectRow(index)">
+      </edit-multi-select-control>
+    </div>
+
+    <div ng-switch-when="TextInput">
+      <edit-text-input-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-text-input-control>
+    </div>
+    
+    <div ng-switch-when="RepeatSection">
+      <edit-repeat-section-control nya-select="editControlModCtrl.nyaSelect"
+      model="editControlModCtrl.model" originalFields="editControlModCtrl.originalFields" 
+      form="editControlModCtrl.form" options="editControlModCtrl.options">
+      </edit-repeat-section-control>
+    </div>
+
+    <!-- <div ng-switch-when="Password">
+      <edit-password-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-password-control>
+    </div> -->
+
+    <div ng-switch-when="Email">
+      <edit-email-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-email-control>
+    </div>
+
+    <!-- <div ng-switch-when="IpAdress">
+      <edit-ip-adress-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-ip-adress-control>
+    </div> -->
+
+    <div ng-switch-when="Date">
+      <edit-date-control
+        nya-select="editControlModCtrl.nyaSelect"
+        demodt="editControlModCtrl.demodt"
+        date-options="editControlModCtrl.dateOptions"
+        open="editControlModCtrl.open(event)">
+      <edit-date-control>
+    </div>
+
+
+    <div ng-switch-when="DateTime">
+      <edit-date-control nya-select="editControlModCtrl.nyaSelect" demodt="editControlModCtrl.demodttime" date-Options="editControlModCtrl.dateTimeOptions"
+      open="editControlModCtrl.openDateTime()">
+      </edit-date-control>
+    </div>
+
+    <div ng-switch-when="Texarea">
+      <edit-textarea-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-textarea-control>
+    </div>
+
+    <div ng-switch-when="RichTextEditor">
+      <edit-rich-text-editor-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-rich-text-editor-control>
+    </div>
+
+    <div ng-switch-when="Radio">
+      <edit-radio-control
+        nya-select="editControlModCtrl.nyaSelect"
+        radio-row-collection="editControlModCtrl.radioRowCollection"
+        new-option-radio="editControlModCtrl.newOptionRadio"
+        add-new-option-radio="editControlModCtrl.addNewOptionRadio()"
+        up-this-radio-row="editControlModCtrl.upThisRadioRow(index)"
+        down-this-radio-row="editControlModCtrl.downThisRadioRow(index)"
+        remove-radio-row="editControlModCtrl.removeRadioRow(index)">
+      </edit-radio-control>
+    </div>
+
+    <div ng-switch-when="Checkbox">
+      <edit-check-box-control
+        nya-select="editControlModCtrl.nyaSelect">
+      </edit-check-box-control>
+    </div>
+
+    <div ng-switch-when="BasicSelect">
+      <edit-basic-select-control
+        nya-select="editControlModCtrl.nyaSelect"
+        basic-select-row-collection="editControlModCtrl.basicSelectRowCollection"
+        new-option-basic-select="editControlModCtrl.newOptionBasicSelect"
+        add-new-option-basic-select="editControlModCtrl.addNewOptionBasicSelect()"
+        up-this-row="editControlModCtrl.upThisRow(index)"
+        down-this-row="editControlModCtrl.downThisRow(index)"
+        remove-row="editControlModCtrl.removeRow(index)">
+      </edit-basic-select-control>
+    </div>
+
+    <div ng-switch-when="GroupedSelect">
+      <edit-grouped-select-control
+        nya-select="editControlModCtrl.nyaSelect"
+        grouped-select-row-collection="editControlModCtrl.groupedSelectRowCollection"
+        new-option-grouped-select="editControlModCtrl.newOptionGroupedSelect"
+        new-group-grouped-select="editControlModCtrl.newGroupGroupedSelect"
+        group-select-group-click="editControlModCtrl.groupSelectGroupClick"
+        grouped-select-groups="editControlModCtrl.GroupedSelectGroups"
+        add-new-option-grouped-select="editControlModCtrl.addNewOptionGroupedSelect()"
+        add-new-group-to-grouped-select="editControlModCtrl.addNewGroupToGroupedSelect()"
+        up-this-grouped-select-row="editControlModCtrl.upThisGroupedSelectRow(index)"
+        down-this-grouped-select-row="editControlModCtrl.downThisGroupedSelectRow(index)"
+        show-group-list-to-choose="editControlModCtrl.showGroupListToChoose()"
+        remove-grouped-select-row="editControlModCtrl.removeGroupedSelectRow(index)"
+        >
+      </edit-grouped-select-control>
+    </div>
+
+  </div>
+</div>
+
+<edit-valid-edit-footer
+  nya-select="editControlModCtrl.nyaSelect"
+  ok="editControlModCtrl.ok()"
+  cancel="editControlModCtrl.cancel()" >
+</edit-valid-edit-footer>
