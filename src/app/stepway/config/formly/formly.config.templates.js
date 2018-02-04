@@ -1,6 +1,6 @@
 // tips: use some plugin like atom-typescript to highlight html templates inside backticks
 export const richTextTemplate = {
-  template: `
+    template: `
   <text-angular
     name="{{id}}"
     class="richTextAngular"
@@ -11,12 +11,12 @@ export const richTextTemplate = {
 
 /* eslint-disable quotes */
 export const blankTemplate = {
-  template: `<div></div>`
+    template: `<div></div>`
 };
 /* eslint-enable quotes */
 
 export const headerTemplate = {
-  template: `
+    template: `
     <div class="row">
       <div class="">
         <h2 class="text-center">
@@ -29,7 +29,7 @@ export const headerTemplate = {
 };
 
 export const subTitleTemplate = {
-  template: `
+    template: `
     <div class="row">
       <div class="">
         <h4 class="text-center">
@@ -42,7 +42,7 @@ export const subTitleTemplate = {
 };
 
 export const basicSelectTemplate = {
-  template: `
+    template: `
     <ol
       class="nya-bs-select col-sm-12 col-xs-12 col-md-12 col-lg12"
       ng-model="model[options.key || index]"
@@ -60,7 +60,7 @@ export const basicSelectTemplate = {
 };
 
 export const groupedSelectTemplate = {
-  template: `
+    template: `
     <ol
       class="nya-bs-select col-sm-12 col-xs-12 col-md-12 col-lg12"
       ng-model="model[options.key || index]"
@@ -82,7 +82,7 @@ export const groupedSelectTemplate = {
 };
 
 export const multiSelectTemplate = {
-  template: `
+    template: `
     <ol
       class="nya-bs-select col-sm-12 col-xs-12 col-md-12 col-lg12"
       ng-model="model[options.key || index]"
@@ -104,7 +104,7 @@ export const multiSelectTemplate = {
 };
 
 export const repeatSectionTemplate = {
-  template: `
+    template: `
       <div>
       	<div class="{{hideRepeat}}">
           <div class="repeatsection" ng-repeat="element in model[options.key]" ng-init="fields = copyFields(to.fields)">
@@ -125,10 +125,10 @@ export const repeatSectionTemplate = {
       </div>
     `
 };
-  
+
 
 export const datepickerTemplate = {
-  template: `
+    template: `
     <p class="input-group">
       <span class="input-group-btn">
         <button
@@ -154,13 +154,13 @@ export const datepickerTemplate = {
 };
 
 export const datetimepickerTemplate = {
-  template: `
+    template: `
     <p class="input-group">
       <span class="input-group-btn">
         <button
           type="button"
           class="btn btn-default"
-          ng-click="datetimepicker.openDateTime()">
+          ng-click="datetimepicker.open($event)">
           <i class="glyphicon glyphicon-calendar"></i>
         </button>
       </span>
@@ -170,7 +170,7 @@ export const datetimepickerTemplate = {
         name="{{::id}}"
         ng-model="model[options.key]"
         class="form-control"
-        ng-click="datetimepicker.openDateTime()"
+        ng-click="datetimepicker.open($event)"
         uib-datepicker-popup="{{to.datetimepickerOptions.format}}"
         is-open="datetimepicker.opened"
         datetimepicker-options="to.datetimepickerOptions"
@@ -180,7 +180,7 @@ export const datetimepickerTemplate = {
 };
 
 export const validationTemplate = {
-  template: `
+    template: `
     <div
       class="formly-template-wrapper form-group"
       ng-class="{\'has-error\': options.validation.errorExistsAndShouldBeVisible}">

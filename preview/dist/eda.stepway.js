@@ -4626,196 +4626,209 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	var _formlyConfig = __webpack_require__(11);
 	
 	function formlyConfig(formlyConfigProvider) {
-	  formlyConfigProvider.setType({
-	    name: 'richEditor',
-	    template: _formlyConfig.richTextTemplate.template,
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError']
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'richEditor',
+	        template: _formlyConfig.richTextTemplate.template,
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError']
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'blank',
-	    template: _formlyConfig.blankTemplate.template
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'blank',
+	        template: _formlyConfig.blankTemplate.template
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'header',
-	    template: _formlyConfig.headerTemplate.template
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'header',
+	        template: _formlyConfig.headerTemplate.template
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'subTitle',
-	    template: _formlyConfig.subTitleTemplate.template
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'subTitle',
+	        template: _formlyConfig.subTitleTemplate.template
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'basicSelect',
-	    template: _formlyConfig.basicSelectTemplate.template,
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError']
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'basicSelect',
+	        template: _formlyConfig.basicSelectTemplate.template,
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError']
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'groupedSelect',
-	    template: _formlyConfig.groupedSelectTemplate.template,
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError']
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'groupedSelect',
+	        template: _formlyConfig.groupedSelectTemplate.template,
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError']
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'multiSelect',
-	    template: _formlyConfig.multiSelectTemplate.template,
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError']
-	  });
+	    formlyConfigProvider.setType({
+	        name: 'multiSelect',
+	        template: _formlyConfig.multiSelectTemplate.template,
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError']
+	    });
 	
-	  formlyConfigProvider.setType({
-	    name: 'repeatSection',
-	    template: _formlyConfig.repeatSectionTemplate.template,
-	    // templateUrl: 'repeatSection.html',
-	    controller: function controller($scope) {
-	      $scope.formOptions = { formState: $scope.formState };
-	      $scope.addNew = addNew;
+	    formlyConfigProvider.setType({
+	        name: 'repeatSection',
+	        template: _formlyConfig.repeatSectionTemplate.template,
+	        // templateUrl: 'repeatSection.html',
+	        controller: function controller($scope) {
+	            $scope.formOptions = { formState: $scope.formState };
+	            $scope.addNew = addNew;
 	
-	      $scope.copyFields = copyFields;
+	            $scope.copyFields = copyFields;
 	
-	      console.log($scope.copyFields);
+	            console.log($scope.copyFields);
 	
-	      $scope.copyFields = function (fields) {
-	        fields = angular.copy(fields);
-	        addRandomIds(fields);
-	        return fields;
-	      };
+	            $scope.copyFields = function (fields) {
+	                fields = angular.copy(fields);
+	                addRandomIds(fields);
+	                return fields;
+	            };
 	
-	      $scope.addNew = function () {
-	        $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
-	        var repeatsection = $scope.model[$scope.options.key];
-	        var lastSection = repeatsection[repeatsection.length - 1];
-	        var newsection = {};
-	        if (lastSection) {
-	          newsection = angular.copy(lastSection);
+	            $scope.addNew = function () {
+	                $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
+	                var repeatsection = $scope.model[$scope.options.key];
+	                var lastSection = repeatsection[repeatsection.length - 1];
+	                var newsection = {};
+	                if (lastSection) {
+	                    newsection = angular.copy(lastSection);
+	                }
+	                repeatsection.push(newsection);
+	            };
+	
+	            $scope.addRandomIds = function (fields) {
+	                unique++;
+	                angular.forEach(fields, function (field, index) {
+	                    if (field.fieldGroup) {
+	                        addRandomIds(field.fieldGroup);
+	                        return; // fieldGroups don't need an ID
+	                    }
+	
+	                    if (field.templateOptions && field.templateOptions.fields) {
+	                        addRandomIds(field.templateOptions.fields);
+	                    }
+	
+	                    field.id = field.id || field.key + '_' + index + '_' + unique + getRandomInt(0, 9999);
+	                });
+	            };
+	
+	            $scope.getRandomInt = function (min, max) {
+	                return Math.floor(Math.random() * (max - min)) + min;
+	            };
 	        }
-	        repeatsection.push(newsection);
-	      };
+	    });
 	
-	      $scope.addRandomIds = function (fields) {
-	        unique++;
-	        angular.forEach(fields, function (field, index) {
-	          if (field.fieldGroup) {
-	            addRandomIds(field.fieldGroup);
-	            return; // fieldGroups don't need an ID
-	          }
+	    ////////////////////////////
+	    // angular UI date picker
+	    ////////////////////////////
+	    // thx Kent C. Dodds
 	
-	          if (field.templateOptions && field.templateOptions.fields) {
-	            addRandomIds(field.templateOptions.fields);
-	          }
+	    var attributes = ['date-disabled', 'custom-class', 'show-weeks', 'starting-day', 'init-date', 'min-mode', 'max-mode', 'format-day', 'format-month', 'format-year', 'format-day-header', 'format-day-title', 'format-month-title', 'year-range', 'shortcut-propagation', 'datepicker-popup', 'show-button-bar', 'current-text', 'clear-text', 'close-text', 'close-on-date-selection', 'datepicker-append-to-body'];
 	
-	          field.id = field.id || field.key + '_' + index + '_' + unique + getRandomInt(0, 9999);
+	    var bindings = ['datepicker-mode', 'min-date', 'max-date'];
+	
+	    var ngModelAttrs = {};
+	    angular.forEach(attributes, function (attr) {
+	        ngModelAttrs[camelize(attr)] = { attribute: attr };
+	    });
+	
+	    angular.forEach(bindings, function (binding) {
+	        ngModelAttrs[camelize(binding)] = { bound: binding };
+	    });
+	
+	    formlyConfigProvider.setType({
+	        name: 'datepicker',
+	        template: _formlyConfig.datepickerTemplate.template,
+	        defaultOptions: {
+	            ngModelAttrs: ngModelAttrs,
+	            templateOptions: {
+	                datepickerOptions: {
+	                    format: 'dd/MM/yyyy',
+	                    initDate: new Date(),
+	                    showWeeks: false
+	                }
+	            }
+	        },
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+	        controller: ['$scope', function ($scope) {
+	            $scope.datepicker = {};
+	            // make sure the initial value is of type DATE!
+	            var currentModelVal = $scope.model[$scope.options.key];
+	            if (typeof currentModelVal == 'string') {
+	                $scope.model[$scope.options.key] = new Date(currentModelVal);
+	            }
+	            $scope.datepicker.opened = false;
+	            $scope.datepicker.open = function ($event) {
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	                $scope.datepicker.opened = !$scope.datepicker.opened;
+	            };
+	        }]
+	    });
+	    formlyConfigProvider.setType({
+	        name: 'datetimepicker',
+	        template: _formlyConfig.datetimepickerTemplate.template,
+	        defaultOptions: {
+	            ngModelAttrs: ngModelAttrs,
+	            templateOptions: {
+	                datetimepickerOptions: {
+	                    format: 'dd/MM/yyyy',
+	                    initDate: new Date(),
+	                    showWeeks: false
+	                }
+	            }
+	        },
+	        wrapper: ['bootstrapLabel', 'bootstrapHasError'],
+	        controller: ['$scope', function ($scope) {
+	            $scope.datetimepicker = {};
+	            // make sure the initial value is of type DATE!
+	            var currentModelVal = $scope.model[$scope.options.key];
+	            if (typeof currentModelVal == 'string') {
+	                $scope.model[$scope.options.key] = new Date(currentModelVal);
+	            }
+	            $scope.datetimepicker.opened = false;
+	            $scope.datetimepicker.open = function ($event) {
+	
+	                $event.preventDefault();
+	                $event.stopPropagation();
+	            };
+	
+	            $scope.initDateTimePicker = function () {
+	                if ($('#' + $scope.id).is(':visible')) {
+	                    $('#' + $scope.id).datetimepicker();
+	                } else {
+	                    $('#' + $scope.id).prop('disabled', false);
+	                    setTimeout(function () {
+	                        $scope.initDateTimePicker();
+	                    }, 10);
+	                }
+	            };
+	
+	            $scope.initDateTimePicker();
+	        }]
+	    });
+	
+	    /**
+	     * wrappers to show validation errors
+	     * without having to rewrite formly types
+	     */
+	    formlyConfigProvider.setWrapper([{
+	        template: _formlyConfig.validationTemplate.template
+	    }]);
+	
+	    function camelize(string) {
+	        string = string.replace(/[\-_\s]+(.)?/g, function (match, chr) {
+	            return chr ? chr.toUpperCase() : '';
 	        });
-	      };
-	
-	      $scope.getRandomInt = function (min, max) {
-	        return Math.floor(Math.random() * (max - min)) + min;
-	      };
+	        // Ensure 1st char is always lowercase
+	        return string.replace(/^([A-Z])/, function (match, chr) {
+	            return chr ? chr.toLowerCase() : '';
+	        });
 	    }
-	  });
-	
-	  ////////////////////////////
-	  // angular UI date picker
-	  ////////////////////////////
-	  // thx Kent C. Dodds
-	
-	  var attributes = ['date-disabled', 'custom-class', 'show-weeks', 'starting-day', 'init-date', 'min-mode', 'max-mode', 'format-day', 'format-month', 'format-year', 'format-day-header', 'format-day-title', 'format-month-title', 'year-range', 'shortcut-propagation', 'datepicker-popup', 'show-button-bar', 'current-text', 'clear-text', 'close-text', 'close-on-date-selection', 'datepicker-append-to-body'];
-	
-	  var bindings = ['datepicker-mode', 'min-date', 'max-date'];
-	
-	  var ngModelAttrs = {};
-	  angular.forEach(attributes, function (attr) {
-	    ngModelAttrs[camelize(attr)] = { attribute: attr };
-	  });
-	
-	  angular.forEach(bindings, function (binding) {
-	    ngModelAttrs[camelize(binding)] = { bound: binding };
-	  });
-	
-	  formlyConfigProvider.setType({
-	    name: 'datepicker',
-	    template: _formlyConfig.datepickerTemplate.template,
-	    defaultOptions: {
-	      ngModelAttrs: ngModelAttrs,
-	      templateOptions: {
-	        datepickerOptions: {
-	          format: 'dd/MM/yyyy',
-	          initDate: new Date(),
-	          showWeeks: false
-	        }
-	      }
-	    },
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-	    controller: ['$scope', function ($scope) {
-	      $scope.datepicker = {};
-	      // make sure the initial value is of type DATE!
-	      var currentModelVal = $scope.model[$scope.options.key];
-	      if (typeof currentModelVal == 'string') {
-	        $scope.model[$scope.options.key] = new Date(currentModelVal);
-	      }
-	      $scope.datepicker.opened = false;
-	      $scope.datepicker.open = function ($event) {
-	        $event.preventDefault();
-	        $event.stopPropagation();
-	        $scope.datepicker.opened = !$scope.datepicker.opened;
-	      };
-	    }]
-	  });
-	  formlyConfigProvider.setType({
-	    name: 'datetimepicker',
-	    template: _formlyConfig.datepickerTemplate.template,
-	    defaultOptions: {
-	      ngModelAttrs: ngModelAttrs,
-	      templateOptions: {
-	        datetiempickerOptions: {
-	          format: 'dd/MM/yyyy',
-	          initDate: new Date(),
-	          showWeeks: false
-	        }
-	      }
-	    },
-	    wrapper: ['bootstrapLabel', 'bootstrapHasError'],
-	    controller: ['$scope', function ($scope) {
-	      $scope.datetiempicker = {};
-	      // make sure the initial value is of type DATE!
-	      var currentModelVal = $scope.model[$scope.options.key];
-	      if (typeof currentModelVal == 'string') {
-	        $scope.model[$scope.options.key] = new Date(currentModelVal);
-	      }
-	      $scope.datetiempicker.opened = false;
-	      $scope.datetiempicker.open = function ($event) {
-	        $event.preventDefault();
-	        $event.stopPropagation();
-	        $scope.datetiempicker.opened = !$scope.datetiempicker.opened;
-	      };
-	    }]
-	  });
-	
-	  /**
-	    * wrappers to show validation errors
-	    * without having to rewrite formly types
-	    */
-	  formlyConfigProvider.setWrapper([{
-	    template: _formlyConfig.validationTemplate.template
-	  }]);
-	
-	  function camelize(string) {
-	    string = string.replace(/[\-_\s]+(.)?/g, function (match, chr) {
-	      return chr ? chr.toUpperCase() : '';
-	    });
-	    // Ensure 1st char is always lowercase
-	    return string.replace(/^([A-Z])/, function (match, chr) {
-	      return chr ? chr.toLowerCase() : '';
-	    });
-	  }
 	}
 	
 	formlyConfig.$inject = ['formlyConfigProvider'];
@@ -4871,7 +4884,7 @@
 	};
 	
 	var datetimepickerTemplate = exports.datetimepickerTemplate = {
-	  template: "\n    <p class=\"input-group\">\n      <span class=\"input-group-btn\">\n        <button\n          type=\"button\"\n          class=\"btn btn-default\"\n          ng-click=\"datetimepicker.openDateTime()\">\n          <i class=\"glyphicon glyphicon-calendar\"></i>\n        </button>\n      </span>\n      <input\n        type=\"text\"\n        id=\"{{::id}}\"\n        name=\"{{::id}}\"\n        ng-model=\"model[options.key]\"\n        class=\"form-control\"\n        ng-click=\"datetimepicker.openDateTime()\"\n        uib-datepicker-popup=\"{{to.datetimepickerOptions.format}}\"\n        is-open=\"datetimepicker.opened\"\n        datetimepicker-options=\"to.datetimepickerOptions\"\n      />\n    </p>\n  "
+	  template: "\n    <p class=\"input-group\">\n      <span class=\"input-group-btn\">\n        <button\n          type=\"button\"\n          class=\"btn btn-default\"\n          ng-click=\"datetimepicker.open($event)\">\n          <i class=\"glyphicon glyphicon-calendar\"></i>\n        </button>\n      </span>\n      <input\n        type=\"text\"\n        id=\"{{::id}}\"\n        name=\"{{::id}}\"\n        ng-model=\"model[options.key]\"\n        class=\"form-control\"\n        ng-click=\"datetimepicker.open($event)\"\n        uib-datepicker-popup=\"{{to.datetimepickerOptions.format}}\"\n        is-open=\"datetimepicker.opened\"\n        datetimepicker-options=\"to.datetimepickerOptions\"\n      />\n    </p>\n  "
 	};
 	
 	var validationTemplate = exports.validationTemplate = {
@@ -5470,7 +5483,7 @@
 /* 25 */
 /***/ (function(module, exports) {
 
-	module.exports = "<div class=\"modal-header\">\n  <h3 class=\"modal-title greyText\">\n    {{'SELECT_A_CTRL' | translate}}\n  </h3>\n</div>\n<div class=\"modal-body\">\n  <hr/>\n  <div class=\"row\">\n    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n      <h5 class=\"greyText\">\n        <i class=\"fa fa-filter\"></i>\n        &nbsp;\n        {{'SELECT_CTRL_IN_LIST' | translate}} :\n      </h5>\n    </div>\n    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\n      <edit-choose-control\n        model-nya-select=\"editControlModCtrl.modelNyaSelect\"\n        nya-select-filtered=\"editControlModCtrl.nyaSelectFiltered\"\n        select-this-control=\"editControlModCtrl.selectThisControl(optionId)\">\n      </edit-choose-control>\n    </div>\n  </div>\n  <hr/>\n  <div ng-switch on=\"editControlModCtrl.nyaSelect.selectedControl\">\n\n    <div ng-switch-when=\"none\">\n      <div class=\"row\">\n        <div class=\"col-sm-12\">\n          <h5 class=\"text-center texteRouge\">\n            <i class=\"fa fa-arrow-up\"></i>\n            &nbsp; {{'SELECT_A_CTRL' | translate}}\n          </h5>\n        </div>\n      </div>\n    </div>\n\n    <div ng-switch-when=\"empty\">\n      <edit-blank-control></edit-blank-control>\n    </div>\n\n    <div ng-switch-when=\"Header\">\n      <edit-header-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-header-control>\n    </div>\n\n    <div ng-switch-when=\"Subtitle\">\n      <edit-sub-title-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-sub-title-control>\n    </div>\n\n    <div ng-switch-when=\"NumberInput\">\n      <edit-number-input-control nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-number-input-control>\n    </div>\n\n    <div ng-switch-when=\"MultiSelect\">\n      <edit-multi-select-control nya-select=\"editControlModCtrl.nyaSelect\" multi-select-row-collection=\"editControlModCtrl.multiSelectRowCollection\"\n        new-option-multi-select=\"editControlModCtrl.newOptionMultiSelect\" new-group-multi-select=\"editControlModCtrl.newGroupMultiSelect\"\n        group-select-group-click=\"editControlModCtrl.groupSelectGroupClick\" multi-select-groups=\"editControlModCtrl.MultiSelectGroups\"\n        add-new-option-multi-select=\"editControlModCtrl.addNewOptionMultiSelect()\" add-new-group-to-multi-select=\"editControlModCtrl.addNewGroupToMultiSelect()\"\n        up-this-multi-select-row=\"editControlModCtrl.upThisMultiSelectRow(index)\" down-this-multi-select-row=\"editControlModCtrl.downThisMultiSelectRow(index)\"\n        show-group-list-to-choose=\"editControlModCtrl.showGroupListToChoose()\" remove-multi-select-row=\"editControlModCtrl.removeMultiSelectRow(index)\">\n      </edit-multi-select-control>\n    </div>\n\n    <div ng-switch-when=\"TextInput\">\n      <edit-text-input-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-text-input-control>\n    </div>\n    \n    <div ng-switch-when=\"RepeatSection\">\n      <edit-repeat-section-control nya-select=\"editControlModCtrl.nyaSelect\"\n      model=\"editControlModCtrl.model\" originalFields=\"editControlModCtrl.originalFields\" \n      form=\"editControlModCtrl.form\" options=\"editControlModCtrl.options\">\n      </edit-repeat-section-control>\n    </div>\n\n    <!-- <div ng-switch-when=\"Password\">\n      <edit-password-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-password-control>\n    </div> -->\n\n    <div ng-switch-when=\"Email\">\n      <edit-email-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-email-control>\n    </div>\n\n    <!-- <div ng-switch-when=\"IpAdress\">\n      <edit-ip-adress-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-ip-adress-control>\n    </div> -->\n\n    <div ng-switch-when=\"Date\">\n      <edit-date-control\n        nya-select=\"editControlModCtrl.nyaSelect\"\n        demodt=\"editControlModCtrl.demodt\"\n        date-options=\"editControlModCtrl.dateOptions\"\n        open=\"editControlModCtrl.open(event)\">\n      <edit-date-control>\n    </div>\n\n\n    <div ng-switch-when=\"DateTime\">\n      <edit-date-control nya-select=\"editControlModCtrl.nyaSelect\" demodt=\"editControlModCtrl.demodttime\" date-Options=\"editControlModCtrl.dateTimeOptions\"\n      open=\"editControlModCtrl.openDateTime()\">\n      </edit-date-control>\n    </div>\n\n    <div ng-switch-when=\"Texarea\">\n      <edit-textarea-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-textarea-control>\n    </div>\n\n    <div ng-switch-when=\"RichTextEditor\">\n      <edit-rich-text-editor-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-rich-text-editor-control>\n    </div>\n\n    <div ng-switch-when=\"Radio\">\n      <edit-radio-control\n        nya-select=\"editControlModCtrl.nyaSelect\"\n        radio-row-collection=\"editControlModCtrl.radioRowCollection\"\n        new-option-radio=\"editControlModCtrl.newOptionRadio\"\n        add-new-option-radio=\"editControlModCtrl.addNewOptionRadio()\"\n        up-this-radio-row=\"editControlModCtrl.upThisRadioRow(index)\"\n        down-this-radio-row=\"editControlModCtrl.downThisRadioRow(index)\"\n        remove-radio-row=\"editControlModCtrl.removeRadioRow(index)\">\n      </edit-radio-control>\n    </div>\n\n    <div ng-switch-when=\"Checkbox\">\n      <edit-check-box-control\n        nya-select=\"editControlModCtrl.nyaSelect\">\n      </edit-check-box-control>\n    </div>\n\n    <div ng-switch-when=\"BasicSelect\">\n      <edit-basic-select-control\n        nya-select=\"editControlModCtrl.nyaSelect\"\n        basic-select-row-collection=\"editControlModCtrl.basicSelectRowCollection\"\n        new-option-basic-select=\"editControlModCtrl.newOptionBasicSelect\"\n        add-new-option-basic-select=\"editControlModCtrl.addNewOptionBasicSelect()\"\n        up-this-row=\"editControlModCtrl.upThisRow(index)\"\n        down-this-row=\"editControlModCtrl.downThisRow(index)\"\n        remove-row=\"editControlModCtrl.removeRow(index)\">\n      </edit-basic-select-control>\n    </div>\n\n    <div ng-switch-when=\"GroupedSelect\">\n      <edit-grouped-select-control\n        nya-select=\"editControlModCtrl.nyaSelect\"\n        grouped-select-row-collection=\"editControlModCtrl.groupedSelectRowCollection\"\n        new-option-grouped-select=\"editControlModCtrl.newOptionGroupedSelect\"\n        new-group-grouped-select=\"editControlModCtrl.newGroupGroupedSelect\"\n        group-select-group-click=\"editControlModCtrl.groupSelectGroupClick\"\n        grouped-select-groups=\"editControlModCtrl.GroupedSelectGroups\"\n        add-new-option-grouped-select=\"editControlModCtrl.addNewOptionGroupedSelect()\"\n        add-new-group-to-grouped-select=\"editControlModCtrl.addNewGroupToGroupedSelect()\"\n        up-this-grouped-select-row=\"editControlModCtrl.upThisGroupedSelectRow(index)\"\n        down-this-grouped-select-row=\"editControlModCtrl.downThisGroupedSelectRow(index)\"\n        show-group-list-to-choose=\"editControlModCtrl.showGroupListToChoose()\"\n        remove-grouped-select-row=\"editControlModCtrl.removeGroupedSelectRow(index)\"\n        >\n      </edit-grouped-select-control>\n    </div>\n\n  </div>\n</div>\n\n<edit-valid-edit-footer\n  nya-select=\"editControlModCtrl.nyaSelect\"\n  ok=\"editControlModCtrl.ok()\"\n  cancel=\"editControlModCtrl.cancel()\" >\n</edit-valid-edit-footer>\n"
+	module.exports = "<div class=\"modal-header\">\r\n  <h3 class=\"modal-title greyText\">\r\n    {{'SELECT_A_CTRL' | translate}}\r\n  </h3>\r\n</div>\r\n<div class=\"modal-body\">\r\n  <hr/>\r\n  <div class=\"row\">\r\n    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\r\n      <h5 class=\"greyText\">\r\n        <i class=\"fa fa-filter\"></i>\r\n        &nbsp;\r\n        {{'SELECT_CTRL_IN_LIST' | translate}} :\r\n      </h5>\r\n    </div>\r\n    <div class=\"col-xs-12 col-sm-12 col-md-12 col-lg-12\">\r\n      <edit-choose-control\r\n        model-nya-select=\"editControlModCtrl.modelNyaSelect\"\r\n        nya-select-filtered=\"editControlModCtrl.nyaSelectFiltered\"\r\n        select-this-control=\"editControlModCtrl.selectThisControl(optionId)\">\r\n      </edit-choose-control>\r\n    </div>\r\n  </div>\r\n  <hr/>\r\n  <div ng-switch on=\"editControlModCtrl.nyaSelect.selectedControl\">\r\n\r\n    <div ng-switch-when=\"none\">\r\n      <div class=\"row\">\r\n        <div class=\"col-sm-12\">\r\n          <h5 class=\"text-center texteRouge\">\r\n            <i class=\"fa fa-arrow-up\"></i>\r\n            &nbsp; {{'SELECT_A_CTRL' | translate}}\r\n          </h5>\r\n        </div>\r\n      </div>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"empty\">\r\n      <edit-blank-control></edit-blank-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"Header\">\r\n      <edit-header-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-header-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"Subtitle\">\r\n      <edit-sub-title-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-sub-title-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"NumberInput\">\r\n      <edit-number-input-control nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-number-input-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"MultiSelect\">\r\n      <edit-multi-select-control nya-select=\"editControlModCtrl.nyaSelect\" multi-select-row-collection=\"editControlModCtrl.multiSelectRowCollection\"\r\n        new-option-multi-select=\"editControlModCtrl.newOptionMultiSelect\" new-group-multi-select=\"editControlModCtrl.newGroupMultiSelect\"\r\n        group-select-group-click=\"editControlModCtrl.groupSelectGroupClick\" multi-select-groups=\"editControlModCtrl.MultiSelectGroups\"\r\n        add-new-option-multi-select=\"editControlModCtrl.addNewOptionMultiSelect()\" add-new-group-to-multi-select=\"editControlModCtrl.addNewGroupToMultiSelect()\"\r\n        up-this-multi-select-row=\"editControlModCtrl.upThisMultiSelectRow(index)\" down-this-multi-select-row=\"editControlModCtrl.downThisMultiSelectRow(index)\"\r\n        show-group-list-to-choose=\"editControlModCtrl.showGroupListToChoose()\" remove-multi-select-row=\"editControlModCtrl.removeMultiSelectRow(index)\">\r\n      </edit-multi-select-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"TextInput\">\r\n      <edit-text-input-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-text-input-control>\r\n    </div>\r\n    \r\n    <div ng-switch-when=\"RepeatSection\">\r\n      <edit-repeat-section-control nya-select=\"editControlModCtrl.nyaSelect\"\r\n      model=\"editControlModCtrl.model\" originalFields=\"editControlModCtrl.originalFields\" \r\n      form=\"editControlModCtrl.form\" options=\"editControlModCtrl.options\">\r\n      </edit-repeat-section-control>\r\n    </div>\r\n\r\n    <!-- <div ng-switch-when=\"Password\">\r\n      <edit-password-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-password-control>\r\n    </div> -->\r\n\r\n    <div ng-switch-when=\"Email\">\r\n      <edit-email-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-email-control>\r\n    </div>\r\n\r\n    <!-- <div ng-switch-when=\"IpAdress\">\r\n      <edit-ip-adress-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-ip-adress-control>\r\n    </div> -->\r\n\r\n    <div ng-switch-when=\"Date\">\r\n      <edit-date-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\"\r\n        demodt=\"editControlModCtrl.demodt\"\r\n        date-options=\"editControlModCtrl.dateOptions\"\r\n        open=\"editControlModCtrl.open(event)\">\r\n      <edit-date-control>\r\n    </div>\r\n\r\n\r\n    <div ng-switch-when=\"DateTime\">\r\n      <edit-date-control nya-select=\"editControlModCtrl.nyaSelect\" demodt=\"editControlModCtrl.demodttime\" date-Options=\"editControlModCtrl.dateTimeOptions\"\r\n      open=\"editControlModCtrl.openDateTime()\">\r\n      </edit-date-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"Texarea\">\r\n      <edit-textarea-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-textarea-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"RichTextEditor\">\r\n      <edit-rich-text-editor-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-rich-text-editor-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"Radio\">\r\n      <edit-radio-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\"\r\n        radio-row-collection=\"editControlModCtrl.radioRowCollection\"\r\n        new-option-radio=\"editControlModCtrl.newOptionRadio\"\r\n        add-new-option-radio=\"editControlModCtrl.addNewOptionRadio()\"\r\n        up-this-radio-row=\"editControlModCtrl.upThisRadioRow(index)\"\r\n        down-this-radio-row=\"editControlModCtrl.downThisRadioRow(index)\"\r\n        remove-radio-row=\"editControlModCtrl.removeRadioRow(index)\">\r\n      </edit-radio-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"Checkbox\">\r\n      <edit-check-box-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\">\r\n      </edit-check-box-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"BasicSelect\">\r\n      <edit-basic-select-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\"\r\n        basic-select-row-collection=\"editControlModCtrl.basicSelectRowCollection\"\r\n        new-option-basic-select=\"editControlModCtrl.newOptionBasicSelect\"\r\n        add-new-option-basic-select=\"editControlModCtrl.addNewOptionBasicSelect()\"\r\n        up-this-row=\"editControlModCtrl.upThisRow(index)\"\r\n        down-this-row=\"editControlModCtrl.downThisRow(index)\"\r\n        remove-row=\"editControlModCtrl.removeRow(index)\">\r\n      </edit-basic-select-control>\r\n    </div>\r\n\r\n    <div ng-switch-when=\"GroupedSelect\">\r\n      <edit-grouped-select-control\r\n        nya-select=\"editControlModCtrl.nyaSelect\"\r\n        grouped-select-row-collection=\"editControlModCtrl.groupedSelectRowCollection\"\r\n        new-option-grouped-select=\"editControlModCtrl.newOptionGroupedSelect\"\r\n        new-group-grouped-select=\"editControlModCtrl.newGroupGroupedSelect\"\r\n        group-select-group-click=\"editControlModCtrl.groupSelectGroupClick\"\r\n        grouped-select-groups=\"editControlModCtrl.GroupedSelectGroups\"\r\n        add-new-option-grouped-select=\"editControlModCtrl.addNewOptionGroupedSelect()\"\r\n        add-new-group-to-grouped-select=\"editControlModCtrl.addNewGroupToGroupedSelect()\"\r\n        up-this-grouped-select-row=\"editControlModCtrl.upThisGroupedSelectRow(index)\"\r\n        down-this-grouped-select-row=\"editControlModCtrl.downThisGroupedSelectRow(index)\"\r\n        show-group-list-to-choose=\"editControlModCtrl.showGroupListToChoose()\"\r\n        remove-grouped-select-row=\"editControlModCtrl.removeGroupedSelectRow(index)\"\r\n        >\r\n      </edit-grouped-select-control>\r\n    </div>\r\n\r\n  </div>\r\n</div>\r\n\r\n<edit-valid-edit-footer\r\n  nya-select=\"editControlModCtrl.nyaSelect\"\r\n  ok=\"editControlModCtrl.ok()\"\r\n  cancel=\"editControlModCtrl.cancel()\" >\r\n</edit-valid-edit-footer>\r\n"
 
 /***/ }),
 /* 26 */
@@ -5479,7 +5492,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -5492,1096 +5505,1094 @@
 	/* global angular */
 	(function () {
 	
-	  'use strict';
+	    'use strict';
 	
-	  var app = angular.module('formlyExample', ['formly', 'formlyBootstrap'], function config(formlyConfigProvider) {
-	    var unique = 1;
-	    formlyConfigProvider.setType({
-	      name: 'repeatSection',
-	      templateUrl: 'repeatSection.html',
-	      controller: function controller($scope) {
-	        $scope.formOptions = {
-	          formState: $scope.formState
-	        };
-	        $scope.addNew = addNew;
+	    var app = angular.module('formlyExample', ['formly', 'formlyBootstrap'], function config(formlyConfigProvider) {
+	        var unique = 1;
+	        formlyConfigProvider.setType({
+	            name: 'repeatSection',
+	            templateUrl: 'repeatSection.html',
+	            controller: function controller($scope) {
+	                $scope.formOptions = {
+	                    formState: $scope.formState
+	                };
+	                $scope.addNew = addNew;
 	
-	        $scope.copyFields = copyFields;
+	                $scope.copyFields = copyFields;
 	
-	        function copyFields(fields) {
-	          fields = angular.copy(fields);
-	          addRandomIds(fields);
-	          return fields;
-	        }
+	                function copyFields(fields) {
+	                    fields = angular.copy(fields);
+	                    addRandomIds(fields);
+	                    return fields;
+	                }
 	
-	        function addNew() {
-	          $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
-	          var repeatsection = $scope.model[$scope.options.key];
-	          var lastSection = repeatsection[repeatsection.length - 1];
-	          var newsection = {};
-	          if (lastSection) {
-	            newsection = angular.copy(lastSection);
-	          }
-	          repeatsection.push(newsection);
-	        }
+	                function addNew() {
+	                    $scope.model[$scope.options.key] = $scope.model[$scope.options.key] || [];
+	                    var repeatsection = $scope.model[$scope.options.key];
+	                    var lastSection = repeatsection[repeatsection.length - 1];
+	                    var newsection = {};
+	                    if (lastSection) {
+	                        newsection = angular.copy(lastSection);
+	                    }
+	                    repeatsection.push(newsection);
+	                }
 	
-	        function addRandomIds(fields) {
-	          unique++;
-	          angular.forEach(fields, function (field, index) {
-	            if (field.fieldGroup) {
-	              addRandomIds(field.fieldGroup);
-	              return; // fieldGroups don't need an ID
+	                function addRandomIds(fields) {
+	                    unique++;
+	                    angular.forEach(fields, function (field, index) {
+	                        if (field.fieldGroup) {
+	                            addRandomIds(field.fieldGroup);
+	                            return; // fieldGroups don't need an ID
+	                        }
+	
+	                        if (field.templateOptions && field.templateOptions.fields) {
+	                            addRandomIds(field.templateOptions.fields);
+	                        }
+	
+	                        field.id = field.id || field.key + '_' + index + '_' + unique + getRandomInt(0, 9999);
+	                    });
+	                }
+	
+	                function getRandomInt(min, max) {
+	                    return Math.floor(Math.random() * (max - min)) + min;
+	                }
 	            }
-	
-	            if (field.templateOptions && field.templateOptions.fields) {
-	              addRandomIds(field.templateOptions.fields);
-	            }
-	
-	            field.id = field.id || field.key + '_' + index + '_' + unique + getRandomInt(0, 9999);
-	          });
-	        }
-	
-	        function getRandomInt(min, max) {
-	          return Math.floor(Math.random() * (max - min)) + min;
-	        }
-	      }
+	        });
 	    });
-	  });
 	
-	  app.controller('MainCtrl', function MainCtrl(formlyVersion) {
-	    var vm = this;
-	    // funcation assignment
-	    vm.onSubmit = onSubmit;
+	    app.controller('MainCtrl', function MainCtrl(formlyVersion) {
+	        var vm = this;
+	        // funcation assignment
+	        vm.onSubmit = onSubmit;
 	
-	    // variable assignment
-	    vm.author = { // optionally fill in your info below :-)
-	      name: 'Joe Zhou',
-	      url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
-	    };
-	    vm.exampleTitle = 'Repeating Section'; // add this
-	    vm.env = {
-	      angularVersion: angular.version.full,
-	      formlyVersion: formlyVersion
-	    };
-	    vm.options = {};
+	        // variable assignment
+	        vm.author = { // optionally fill in your info below :-)
+	            name: 'Joe Zhou',
+	            url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
+	        };
+	        vm.exampleTitle = 'Repeating Section'; // add this
+	        vm.env = {
+	            angularVersion: angular.version.full,
+	            formlyVersion: formlyVersion
+	        };
+	        vm.options = {};
 	
-	    init();
+	        init();
 	
-	    vm.originalFields = angular.copy(vm.fields);
+	        vm.originalFields = angular.copy(vm.fields);
 	
-	    // function definition
-	    function onSubmit() {
-	      alert(JSON.stringify(vm.model), null, 2);
-	    }
-	
-	    function init() {
-	      vm.model = {
-	        investments: [{
-	          investmentName: 'abc',
-	          investmentDate: new Date().toDateString(),
-	          stockIdentifier: '',
-	          investmentValue: '',
-	          relationshipName: '',
-	          complianceApprover: '',
-	          requestorComment: ''
-	        }, {
-	          investmentName: 'haf',
-	          investmentDate: new Date().toDateString(),
-	          stockIdentifier: '',
-	          investmentValue: '',
-	          relationshipName: '',
-	          complianceApprover: '',
-	          requestorComment: ''
-	        }]
-	      };
-	
-	      vm.fields = [{
-	        type: 'repeatSection',
-	        key: 'investments',
-	        templateOptions: {
-	          btnText: 'Add another investment',
-	          fields: [{
-	            className: 'row',
-	            fieldGroup: [{
-	              className: 'col-xs-4',
-	              type: 'input',
-	              key: 'investmentName',
-	              templateOptions: {
-	                label: 'Name of Investment:',
-	                required: true
-	              }
-	            }, {
-	              type: 'input',
-	              key: 'investmentDate',
-	              className: 'col-xs-4',
-	              templateOptions: {
-	                label: 'Date of Investment:',
-	                placeholder: 'dd/mm/yyyy such as 20/05/2015',
-	                dateFormat: 'DD, d  MM, yy'
-	              }
-	            }, {
-	              type: 'input',
-	              key: 'stockIdentifier',
-	              className: 'col-xs-4',
-	              templateOptions: {
-	                label: 'Stock Identifier:'
-	              }
-	            }]
-	          }, {
-	            "type": "radio",
-	            "key": "type",
-	            "templateOptions": {
-	              "options": [{
-	                "name": "Text Field",
-	                "value": "input"
-	              }, {
-	                "name": "TextArea Field",
-	                "value": "textarea"
-	              }, {
-	                "name": "Radio Buttons",
-	                "value": "radio"
-	              }, {
-	                "name": "Checkbox",
-	                "value": "checkbox"
-	              }],
-	              "label": "Field Type",
-	              "required": true
-	            }
-	          }, {
-	            type: 'input',
-	            key: 'investmentValue',
-	            templateOptions: {
-	              label: 'Value:'
-	            },
-	            expressionProperties: {
-	              'templateOptions.disabled': '!model.stockIdentifier'
-	            }
-	          }, {
-	            type: 'checkbox',
-	            model: 'formState',
-	            key: 'selfExecuting',
-	            templateOptions: {
-	              label: 'Are you executing this trade?'
-	            }
-	          }, {
-	            hideExpression: '!formState.selfExecuting',
-	            fieldGroup: [{
-	              type: 'input',
-	              key: 'relationshipName',
-	              templateOptions: {
-	                label: 'Name:'
-	              }
-	            }, {
-	              type: 'select',
-	              key: 'complianceApprover',
-	              templateOptions: {
-	                label: 'Compliance Approver:',
-	                options: [{
-	                  name: 'approver 1',
-	                  value: 'some one 1'
-	                }, {
-	                  name: 'approver 2',
-	                  value: 'some one 2'
-	                }]
-	              }
-	            }, {
-	              type: 'textarea',
-	              key: 'requestorComment',
-	              templateOptions: {
-	                label: 'Requestor Comment',
-	                rows: 4
-	              }
-	            }]
-	          }]
+	        // function definition
+	        function onSubmit() {
+	            alert(JSON.stringify(vm.model), null, 2);
 	        }
 	
-	      }];
-	    }
-	  });
+	        function init() {
+	            vm.model = {
+	                investments: [{
+	                    investmentName: 'abc',
+	                    investmentDate: new Date().toDateString(),
+	                    stockIdentifier: '',
+	                    investmentValue: '',
+	                    relationshipName: '',
+	                    complianceApprover: '',
+	                    requestorComment: ''
+	                }, {
+	                    investmentName: 'haf',
+	                    investmentDate: new Date().toDateString(),
+	                    stockIdentifier: '',
+	                    investmentValue: '',
+	                    relationshipName: '',
+	                    complianceApprover: '',
+	                    requestorComment: ''
+	                }]
+	            };
+	
+	            vm.fields = [{
+	                type: 'repeatSection',
+	                key: 'investments',
+	                templateOptions: {
+	                    btnText: 'Add another investment',
+	                    fields: [{
+	                        className: 'row',
+	                        fieldGroup: [{
+	                            className: 'col-xs-4',
+	                            type: 'input',
+	                            key: 'investmentName',
+	                            templateOptions: {
+	                                label: 'Name of Investment:',
+	                                required: true
+	                            }
+	                        }, {
+	                            type: 'input',
+	                            key: 'investmentDate',
+	                            className: 'col-xs-4',
+	                            templateOptions: {
+	                                label: 'Date of Investment:',
+	                                placeholder: 'dd/mm/yyyy such as 20/05/2015',
+	                                dateFormat: 'DD, d  MM, yy'
+	                            }
+	                        }, {
+	                            type: 'input',
+	                            key: 'stockIdentifier',
+	                            className: 'col-xs-4',
+	                            templateOptions: {
+	                                label: 'Stock Identifier:'
+	                            }
+	                        }]
+	                    }, {
+	                        "type": "radio",
+	                        "key": "type",
+	                        "templateOptions": {
+	                            "options": [{
+	                                "name": "Text Field",
+	                                "value": "input"
+	                            }, {
+	                                "name": "TextArea Field",
+	                                "value": "textarea"
+	                            }, {
+	                                "name": "Radio Buttons",
+	                                "value": "radio"
+	                            }, {
+	                                "name": "Checkbox",
+	                                "value": "checkbox"
+	                            }],
+	                            "label": "Field Type",
+	                            "required": true
+	                        }
+	                    }, {
+	                        type: 'input',
+	                        key: 'investmentValue',
+	                        templateOptions: {
+	                            label: 'Value:'
+	                        },
+	                        expressionProperties: {
+	                            'templateOptions.disabled': '!model.stockIdentifier'
+	                        }
+	                    }, {
+	                        type: 'checkbox',
+	                        model: 'formState',
+	                        key: 'selfExecuting',
+	                        templateOptions: {
+	                            label: 'Are you executing this trade?'
+	                        }
+	                    }, {
+	                        hideExpression: '!formState.selfExecuting',
+	                        fieldGroup: [{
+	                            type: 'input',
+	                            key: 'relationshipName',
+	                            templateOptions: {
+	                                label: 'Name:'
+	                            }
+	                        }, {
+	                            type: 'select',
+	                            key: 'complianceApprover',
+	                            templateOptions: {
+	                                label: 'Compliance Approver:',
+	                                options: [{
+	                                    name: 'approver 1',
+	                                    value: 'some one 1'
+	                                }, {
+	                                    name: 'approver 2',
+	                                    value: 'some one 2'
+	                                }]
+	                            }
+	                        }, {
+	                            type: 'textarea',
+	                            key: 'requestorComment',
+	                            templateOptions: {
+	                                label: 'Requestor Comment',
+	                                rows: 4
+	                            }
+	                        }]
+	                    }]
+	                }
+	
+	            }];
+	        }
+	    });
 	})();
 	
 	// const newLocal = $('.formly_3_datetimepicker_datetimepicker-1994127_1').datetimepicker();
 	
 	var editControlModalController = function () {
-	  function editControlModalController($uibModalInstance, nyaSelect, toaster, selectOptionManage, $modalProxy) {
-	    _classCallCheck(this, editControlModalController);
+	    function editControlModalController($uibModalInstance, nyaSelect, toaster, selectOptionManage, $modalProxy) {
+	        _classCallCheck(this, editControlModalController);
 	
-	    this.$modalInstance = $uibModalInstance;
-	    this.nyaSelect = nyaSelect;
-	    this.toaster = toaster;
-	    this.selectOptionManage = selectOptionManage;
-	    this.$modalProxy = $modalProxy;
+	        this.$modalInstance = $uibModalInstance;
+	        this.nyaSelect = nyaSelect;
+	        this.toaster = toaster;
+	        this.selectOptionManage = selectOptionManage;
+	        this.$modalProxy = $modalProxy;
+	        this.init();
+	    }
 	
-	    this.init();
-	  }
+	    _createClass(editControlModalController, [{
+	        key: 'init',
+	        value: function init() {
+	            var initOptionModel = {
+	                rows: []
+	            };
 	
-	  _createClass(editControlModalController, [{
-	    key: 'init',
-	    value: function init() {
-	      var initOptionModel = {
-	        rows: []
-	      };
+	            this.radioRowCollection = initOptionModel;
+	            this.newOptionRadio = {
+	                saisie: ''
+	            };
+	            this.basicSelectRowCollection = initOptionModel;
+	            this.newOptionBasicSelect = {
+	                saisie: ''
+	            };
+	            this.groupedSelectRowCollection = initOptionModel;
+	            this.newOptionGroupedSelect = {
+	                saisie: ''
+	            };
+	            this.GroupedSelectGroups = {
+	                list: []
+	            };
+	            this.newGroupGroupedSelect = {
+	                saisie: ''
+	            };
 	
-	      this.radioRowCollection = initOptionModel;
-	      this.newOptionRadio = {
-	        saisie: ''
-	      };
-	      this.basicSelectRowCollection = initOptionModel;
-	      this.newOptionBasicSelect = {
-	        saisie: ''
-	      };
-	      this.groupedSelectRowCollection = initOptionModel;
-	      this.newOptionGroupedSelect = {
-	        saisie: ''
-	      };
-	      this.GroupedSelectGroups = {
-	        list: []
-	      };
-	      this.newGroupGroupedSelect = {
-	        saisie: ''
-	      };
+	            this.multiSelectRowCollection = initOptionModel;
+	            this.nyaSelect.temporyConfig.multifilter = [];
 	
-	      this.multiSelectRowCollection = initOptionModel;
-	      this.nyaSelect.temporyConfig.multifilter = [];
+	            var temp_const = {
+	                'group': ""
+	            };
+	            this.nyaSelect.temporyConfig.multifilter.push(temp_const);
 	
-	      var temp_const = {
-	        'group': ""
-	      };
-	      this.nyaSelect.temporyConfig.multifilter.push(temp_const);
+	            this.newOptionMultiSelect = {
+	                saisie: ''
+	            };
+	            this.MultiSelectGroups = {
+	                list: []
+	            };
+	            this.newGroupMultiSelect = {
+	                saisie: ''
+	            };
 	
-	      this.newOptionMultiSelect = {
-	        saisie: ''
-	      };
-	      this.MultiSelectGroups = {
-	        list: []
-	      };
-	      this.newGroupMultiSelect = {
-	        saisie: ''
-	      };
+	            this.groupSelectGroupClick = {
+	                showList: false
+	            };
+	            this.showGroupList = false;
+	            this.demodt = {};
+	            this.dateOptions = this.dateOptionsInit();
+	            this.demodt.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
 	
-	      this.groupSelectGroupClick = {
-	        showList: false
-	      };
-	      this.showGroupList = false;
-	      this.demodt = {};
-	      this.dateOptions = this.dateOptionsInit();
-	      this.demodt.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
+	            this.demodttime = {};
+	            this.dateTimeOptions = this.dateTimeOptionsInit();
+	            this.demodttime.formats = ['dd/MM/yyyy hh:mm:ss', 'yyyy-MM-dd hh:mm', 'yyyy-MM-ddThh:mm', 'yyyy-MM-dd hh:mm:ss', 'yyyy-MM-ddThh:mm:ssZ', 'yyyy-MM-dd hh:mm P Z'];
 	
-	      this.demodttime = {};
-	      this.dateTimeOptions = this.dateTimeOptionsInit();
-	      this.demodttime.formats = ['dd/MM/yyyy hh:mm:ss', 'yyyy-MM-dd hh:mm', 'yyyy-MM-ddThh:mm', 'yyyy-MM-dd hh:mm:ss', 'yyyy-MM-ddThh:mm:ssZ', 'yyyy-MM-dd hh:mm P Z'];
+	            this.nyaSelect.selectedControl = this.nyaSelect.temporyConfig.selectedControl;
+	            this.nyaSelectFiltered = {};
+	            this.modelNyaSelect = {};
 	
-	      this.nyaSelect.selectedControl = this.nyaSelect.temporyConfig.selectedControl;
-	      this.nyaSelectFiltered = {};
-	      this.modelNyaSelect = {};
+	            // this.options                    = {};
+	            // this.fields                     = [];
+	            // this.model                      = {};
+	            // this.originalFields             = {};
 	
-	      // this.options                    = {};
-	      // this.fields                     = [];
-	      // this.model                      = {};
-	      // this.originalFields             = {};
+	            //init today date
+	            this.today();
+	            //init nyaSelect model depending selected control
+	            this.initNyaSelectConformingSelectedControl();
 	
-	      //init today date
-	      this.today();
-	      //init nyaSelect model depending selected control
-	      this.initNyaSelectConformingSelectedControl();
+	            // var vm = this;
+	            // funcation assignment
 	
-	      // var vm = this;
-	      // funcation assignment
+	            // this.onSubmit = onSubmit;
 	
-	      // this.onSubmit = onSubmit;
+	            // variable assignment
 	
-	      // variable assignment
+	            // this.author = { // optionally fill in your info below :-)
+	            //   name: 'Joe Zhou',
+	            //   url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
+	            // };
 	
-	      // this.author = { // optionally fill in your info below :-)
-	      //   name: 'Joe Zhou',
-	      //   url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
-	      // };
+	            this.exampleTitle = 'Repeating Section'; // add this
 	
-	      this.exampleTitle = 'Repeating Section'; // add this
+	            // this.env = {
+	            //   angularVersion: angular.version.full,
+	            //   formlyVersion: formlyVersion
+	            // };
 	
-	      // this.env = {
-	      //   angularVersion: angular.version.full,
-	      //   formlyVersion: formlyVersion
-	      // };
+	            var vm = this;
+	            // funcation assignment
+	            // vm.onSubmit = onSubmit;
 	
-	      var vm = this;
-	      // funcation assignment
-	      // vm.onSubmit = onSubmit;
+	            // variable assignment
+	            vm.author = { // optionally fill in your info below :-)
+	                name: 'Joe Zhou',
+	                url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
+	            };
+	            vm.exampleTitle = 'Repeating Section'; // add this
+	            // vm.env = {
+	            //   angularVersion: angular.version.full,
+	            //   formlyVersion: formlyVersion
+	            // };
+	            vm.options = {};
+	            vm.originalFields = angular.copy(vm.fields);
 	
-	      // variable assignment
-	      vm.author = { // optionally fill in your info below :-)
-	        name: 'Joe Zhou',
-	        url: 'https://plus.google.com/u/0/111062476999618400219/posts' // a link to your twitter/github/blog/whatever
-	      };
-	      vm.exampleTitle = 'Repeating Section'; // add this
-	      // vm.env = {
-	      //   angularVersion: angular.version.full,
-	      //   formlyVersion: formlyVersion
-	      // };
-	      vm.options = {};
-	      vm.originalFields = angular.copy(vm.fields);
-	
-	      vm.model = {
-	        investments: [{
-	          investmentName: 'abc',
-	          investmentDate: new Date().toDateString(),
-	          stockIdentifier: '',
-	          investmentValue: '',
-	          relationshipName: '',
-	          complianceApprover: '',
-	          requestorComment: ''
-	        }, {
-	          investmentName: 'haf',
-	          investmentDate: new Date().toDateString(),
-	          stockIdentifier: '',
-	          investmentValue: '',
-	          relationshipName: '',
-	          complianceApprover: '',
-	          requestorComment: ''
-	        }]
-	      };
-	
-	      vm.fields = [{
-	        type: 'repeatSection',
-	        key: 'investments',
-	        templateOptions: {
-	          btnText: 'Add another investment',
-	          fields: [{
-	            className: 'row',
-	            fieldGroup: [{
-	              className: 'col-xs-4',
-	              type: 'input',
-	              key: 'investmentName',
-	              templateOptions: {
-	                label: 'Name of Investment:',
-	                required: true
-	              }
-	            }, {
-	              type: 'input',
-	              key: 'investmentDate',
-	              className: 'col-xs-4',
-	              templateOptions: {
-	                label: 'Date of Investment:',
-	                placeholder: 'dd/mm/yyyy such as 20/05/2015',
-	                dateFormat: 'DD, d  MM, yy'
-	              }
-	            }, {
-	              type: 'input',
-	              key: 'stockIdentifier',
-	              className: 'col-xs-4',
-	              templateOptions: {
-	                label: 'Stock Identifier:'
-	              }
-	            }]
-	          }, {
-	            "type": "radio",
-	            "key": "type",
-	            "templateOptions": {
-	              "options": [{
-	                "name": "Text Field",
-	                "value": "input"
-	              }, {
-	                "name": "TextArea Field",
-	                "value": "textarea"
-	              }, {
-	                "name": "Radio Buttons",
-	                "value": "radio"
-	              }, {
-	                "name": "Checkbox",
-	                "value": "checkbox"
-	              }],
-	              "label": "Field Type",
-	              "required": true
-	            }
-	          }, {
-	            type: 'input',
-	            key: 'investmentValue',
-	            templateOptions: {
-	              label: 'Value:'
-	            },
-	            expressionProperties: {
-	              'templateOptions.disabled': '!model.stockIdentifier'
-	            }
-	          }, {
-	            type: 'checkbox',
-	            model: 'formState',
-	            key: 'selfExecuting',
-	            templateOptions: {
-	              label: 'Are you executing this trade?'
-	            }
-	          }, {
-	            hideExpression: '!formState.selfExecuting',
-	            fieldGroup: [{
-	              type: 'input',
-	              key: 'relationshipName',
-	              templateOptions: {
-	                label: 'Name:'
-	              }
-	            }, {
-	              type: 'select',
-	              key: 'complianceApprover',
-	              templateOptions: {
-	                label: 'Compliance Approver:',
-	                options: [{
-	                  name: 'approver 1',
-	                  value: 'some one 1'
+	            vm.model = {
+	                investments: [{
+	                    investmentName: 'abc',
+	                    investmentDate: new Date().toDateString(),
+	                    stockIdentifier: '',
+	                    investmentValue: '',
+	                    relationshipName: '',
+	                    complianceApprover: '',
+	                    requestorComment: ''
 	                }, {
-	                  name: 'approver 2',
-	                  value: 'some one 2'
+	                    investmentName: 'haf',
+	                    investmentDate: new Date().toDateString(),
+	                    stockIdentifier: '',
+	                    investmentValue: '',
+	                    relationshipName: '',
+	                    complianceApprover: '',
+	                    requestorComment: ''
 	                }]
-	              }
-	            }, {
-	              type: 'textarea',
-	              key: 'requestorComment',
-	              templateOptions: {
-	                label: 'Requestor Comment',
-	                rows: 4
-	              }
-	            }]
-	          }]
+	            };
+	
+	            vm.fields = [{
+	                type: 'repeatSection',
+	                key: 'investments',
+	                templateOptions: {
+	                    btnText: 'Add another investment',
+	                    fields: [{
+	                        className: 'row',
+	                        fieldGroup: [{
+	                            className: 'col-xs-4',
+	                            type: 'input',
+	                            key: 'investmentName',
+	                            templateOptions: {
+	                                label: 'Name of Investment:',
+	                                required: true
+	                            }
+	                        }, {
+	                            type: 'input',
+	                            key: 'investmentDate',
+	                            className: 'col-xs-4',
+	                            templateOptions: {
+	                                label: 'Date of Investment:',
+	                                placeholder: 'dd/mm/yyyy such as 20/05/2015',
+	                                dateFormat: 'DD, d  MM, yy'
+	                            }
+	                        }, {
+	                            type: 'input',
+	                            key: 'stockIdentifier',
+	                            className: 'col-xs-4',
+	                            templateOptions: {
+	                                label: 'Stock Identifier:'
+	                            }
+	                        }]
+	                    }, {
+	                        "type": "radio",
+	                        "key": "type",
+	                        "templateOptions": {
+	                            "options": [{
+	                                "name": "Text Field",
+	                                "value": "input"
+	                            }, {
+	                                "name": "TextArea Field",
+	                                "value": "textarea"
+	                            }, {
+	                                "name": "Radio Buttons",
+	                                "value": "radio"
+	                            }, {
+	                                "name": "Checkbox",
+	                                "value": "checkbox"
+	                            }],
+	                            "label": "Field Type",
+	                            "required": true
+	                        }
+	                    }, {
+	                        type: 'input',
+	                        key: 'investmentValue',
+	                        templateOptions: {
+	                            label: 'Value:'
+	                        },
+	                        expressionProperties: {
+	                            'templateOptions.disabled': '!model.stockIdentifier'
+	                        }
+	                    }, {
+	                        type: 'checkbox',
+	                        model: 'formState',
+	                        key: 'selfExecuting',
+	                        templateOptions: {
+	                            label: 'Are you executing this trade?'
+	                        }
+	                    }, {
+	                        hideExpression: '!formState.selfExecuting',
+	                        fieldGroup: [{
+	                            type: 'input',
+	                            key: 'relationshipName',
+	                            templateOptions: {
+	                                label: 'Name:'
+	                            }
+	                        }, {
+	                            type: 'select',
+	                            key: 'complianceApprover',
+	                            templateOptions: {
+	                                label: 'Compliance Approver:',
+	                                options: [{
+	                                    name: 'approver 1',
+	                                    value: 'some one 1'
+	                                }, {
+	                                    name: 'approver 2',
+	                                    value: 'some one 2'
+	                                }]
+	                            }
+	                        }, {
+	                            type: 'textarea',
+	                            key: 'requestorComment',
+	                            templateOptions: {
+	                                label: 'Requestor Comment',
+	                                rows: 4
+	                            }
+	                        }]
+	                    }]
+	                }
+	
+	            }];
 	        }
 	
-	      }];
-	    }
+	        // function definition
 	
-	    // function definition
-	
-	  }, {
-	    key: 'onSubmit',
-	    value: function onSubmit() {
-	      alert(JSON.stringify(this.model), null, 2);
-	    }
-	  }, {
-	    key: 'initNyaSelectConformingSelectedControl',
-	    value: function initNyaSelectConformingSelectedControl() {
-	      //place nya-select to selection if not none :
-	      if (this.nyaSelect.selectedControl !== 'none') {
-	        for (var i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
-	          if (this.nyaSelect.controls[i].id === this.nyaSelect.selectedControl) this.modelNyaSelect = this.nyaSelect.controls[i];
+	    }, {
+	        key: 'onSubmit',
+	        value: function onSubmit() {
+	            alert(JSON.stringify(this.model), null, 2);
 	        }
-	        if (this.nyaSelect.selectedControl === 'BasicSelect') this.bindBasicSelectFromNYA();
-	        if (this.nyaSelect.selectedControl === 'GroupedSelect') this.bindGroupedSelectFromNYA();
-	        if (this.nyaSelect.selectedControl === 'MultiSelect') {
-	          this.bindMultiSelectFromNYA();
-	          console.log(this.demodt);
+	    }, {
+	        key: 'initNyaSelectConformingSelectedControl',
+	        value: function initNyaSelectConformingSelectedControl() {
+	            //place nya-select to selection if not none :
+	            if (this.nyaSelect.selectedControl !== 'none') {
+	                for (var i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
+	                    if (this.nyaSelect.controls[i].id === this.nyaSelect.selectedControl) this.modelNyaSelect = this.nyaSelect.controls[i];
+	                }
+	                if (this.nyaSelect.selectedControl === 'BasicSelect') this.bindBasicSelectFromNYA();
+	                if (this.nyaSelect.selectedControl === 'GroupedSelect') this.bindGroupedSelectFromNYA();
+	                if (this.nyaSelect.selectedControl === 'MultiSelect') {
+	                    this.bindMultiSelectFromNYA();
+	                    console.log(this.demodt);
+	                }
+	                if (this.nyaSelect.selectedControl === 'Radio') this.bindRadioFromNYA();
+	                if (this.nyaSelect.selectedControl === 'RepeatSection') {
+	                    console.log(this.fields);
+	                    console.log("TSTSTSTSTS");
+	                }
+	            }
+	            this.initNyaSelectFiltered();
 	        }
-	        if (this.nyaSelect.selectedControl === 'Radio') this.bindRadioFromNYA();
-	        if (this.nyaSelect.selectedControl === 'RepeatSection') {
-	          console.log(this.fields);
-	          console.log("TSTSTSTSTS");
-	        }
-	      }
-	      this.initNyaSelectFiltered();
-	    }
-	  }, {
-	    key: 'initNyaSelectFiltered',
-	    value: function initNyaSelectFiltered() {
-	      var listCtrl = [].concat(this.$modalProxy.getFilteredNyaSelectObject());
-	      angular.extend(this.nyaSelectFiltered, {
-	        'controls': listCtrl,
-	        'selectedControl': this.nyaSelect.selectedControl,
-	        'temporyConfig': this.nyaSelect.temporyConfig
-	      });
-	    }
-	  }, {
-	    key: 'bindBasicSelectFromNYA',
-	    value: function bindBasicSelectFromNYA() {
-	      if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
-	        for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
-	          var newOption = {
-	            'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
-	            'order': i,
-	            'group': ''
-	          };
-	          this.basicSelectRowCollection.rows.push(newOption);
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'bindRadioFromNYA',
-	    value: function bindRadioFromNYA() {
-	      if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
-	        for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
-	          var newOption = {
-	            'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
-	            'order': i,
-	            'group': ''
-	          };
-	          this.radioRowCollection.rows.push(newOption);
-	        }
-	      }
-	    }
-	  }, {
-	    key: 'bindGroupedSelectFromNYA',
-	    value: function bindGroupedSelectFromNYA() {
-	      if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
-	        for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
-	          var newOption = {
-	            'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
-	            'order': i,
-	            'group': this.nyaSelect.temporyConfig.formlyOptions[i].group
-	          };
-	          this.groupedSelectRowCollection.rows.push(newOption);
-	        }
-	        var filteredgroup = _.uniq(_.pluck(this.groupedSelectRowCollection.rows, 'group'));
-	        angular.copy(filteredgroup, this.GroupedSelectGroups.list);
-	      }
-	    }
-	  }, {
-	    key: 'bindMultiSelectFromNYA',
-	    value: function bindMultiSelectFromNYA() {
-	      if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
-	        for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
-	          var newOption = {
-	            'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
-	            'order': i,
-	            'group': this.nyaSelect.temporyConfig.formlyOptions[i].group
-	          };
-	          this.multiSelectRowCollection.rows.push(newOption);
-	          // this.nyaSelect.temporyConfig.multifilter.push(this.nyaSelect.temporyConfig.formlyOptions[i].group);
-	        }
-	        var filteredgroup = _.uniq(_.pluck(this.multiSelectRowCollection.rows, 'group'));
-	        angular.copy(filteredgroup, this.MultiSelectGroups.list);
-	      }
-	    }
-	  }, {
-	    key: 'addNewOptionRadio',
-	    value: function addNewOptionRadio() {
-	      var result = this.selectOptionManage.addNewOptionRadio(this.radioRowCollection, this.newOptionRadio.saisie);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: '\'' + this.newOptionRadio.saisie + '\' cannot be added.',
-	          showCloseButton: true
-	        });
-	      }
-	      this.newOptionRadio = {
-	        saisie: ''
-	      }; //reset input
-	    }
-	  }, {
-	    key: 'removeRadioRow',
-	    value: function removeRadioRow(index) {
-	      var result = this.selectOptionManage.removeOption(this.radioRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Delete was cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'upThisRadioRow',
-	    value: function upThisRadioRow(index) {
-	      var result = this.selectOptionManage.upthisOption(this.radioRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'downThisRadioRow',
-	    value: function downThisRadioRow(index) {
-	      var result = this.selectOptionManage.downthisOption(this.radioRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'addNewOptionBasicSelect',
-	    value: function addNewOptionBasicSelect() {
-	      var result = this.selectOptionManage.addNewOptionBasicSelect(this.basicSelectRowCollection, this.newOptionBasicSelect.saisie);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: '\'' + this.newOptionBasicSelect.saisie + '\' cannot be added.',
-	          showCloseButton: true
-	        });
-	      }
-	      this.newOptionBasicSelect = {
-	        saisie: ''
-	      }; //reset input
-	    }
-	  }, {
-	    key: 'removeRow',
-	    value: function removeRow(index) {
-	      var result = this.selectOptionManage.removeOption(this.basicSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Delete was cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'upThisRow',
-	    value: function upThisRow(index) {
-	      var result = this.selectOptionManage.upthisOption(this.basicSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'downThisRow',
-	    value: function downThisRow(index) {
-	      var result = this.selectOptionManage.downthisOption(this.basicSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'showGroupListToChoose',
-	    value: function showGroupListToChoose() {
-	      this.groupSelectGroupClick.showList = !this.groupSelectGroupClick.showList;
-	    }
-	  }, {
-	    key: 'addNewGroupToGroupedSelect',
-	    value: function addNewGroupToGroupedSelect() {
-	      if (this.newGroupGroupedSelect.saisie !== '') {
-	        for (var i = this.GroupedSelectGroups.list.length - 1; i >= 0; i--) {
-	          if (this.GroupedSelectGroups.list[i] === this.newGroupGroupedSelect.saisie) {
-	            this.toaster.pop({
-	              type: 'warning',
-	              timeout: 2000,
-	              title: 'Group already exists',
-	              body: 'No group added.',
-	              showCloseButton: true
+	    }, {
+	        key: 'initNyaSelectFiltered',
+	        value: function initNyaSelectFiltered() {
+	            var listCtrl = [].concat(this.$modalProxy.getFilteredNyaSelectObject());
+	            angular.extend(this.nyaSelectFiltered, {
+	                'controls': listCtrl,
+	                'selectedControl': this.nyaSelect.selectedControl,
+	                'temporyConfig': this.nyaSelect.temporyConfig
 	            });
-	          }
 	        }
-	        this.GroupedSelectGroups.list.push(this.newGroupGroupedSelect.saisie);
-	      } else {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: 'Not a valid group to add',
-	          body: 'No group added.',
-	          showCloseButton: true
-	        });
-	      }
-	      this.newGroupGroupedSelect.saisie = '';
-	    }
-	  }, {
-	    key: 'addNewGroupToMultiSelect',
-	    value: function addNewGroupToMultiSelect() {
-	      var enable_push = false;
-	      if (this.newGroupMultiSelect.saisie !== '') {
-	        for (var _i = this.MultiSelectGroups.list.length - 1; _i >= 0; _i--) {
-	          if (this.MultiSelectGroups.list[_i] === this.newGroupMultiSelect.saisie) {
-	            this.toaster.pop({
-	              type: 'warning',
-	              timeout: 2000,
-	              title: 'Group already exists',
-	              body: 'No group added.',
-	              showCloseButton: true
-	            });
-	          }
+	    }, {
+	        key: 'bindBasicSelectFromNYA',
+	        value: function bindBasicSelectFromNYA() {
+	            if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
+	                for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
+	                    var newOption = {
+	                        'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
+	                        'order': i,
+	                        'group': ''
+	                    };
+	                    this.basicSelectRowCollection.rows.push(newOption);
+	                }
+	            }
 	        }
-	        this.MultiSelectGroups.list.push(this.newGroupMultiSelect.saisie);
+	    }, {
+	        key: 'bindRadioFromNYA',
+	        value: function bindRadioFromNYA() {
+	            if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
+	                for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
+	                    var newOption = {
+	                        'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
+	                        'order': i,
+	                        'group': ''
+	                    };
+	                    this.radioRowCollection.rows.push(newOption);
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'bindGroupedSelectFromNYA',
+	        value: function bindGroupedSelectFromNYA() {
+	            if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
+	                for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
+	                    var newOption = {
+	                        'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
+	                        'order': i,
+	                        'group': this.nyaSelect.temporyConfig.formlyOptions[i].group
+	                    };
+	                    this.groupedSelectRowCollection.rows.push(newOption);
+	                }
+	                var filteredgroup = _.uniq(_.pluck(this.groupedSelectRowCollection.rows, 'group'));
+	                angular.copy(filteredgroup, this.GroupedSelectGroups.list);
+	            }
+	        }
+	    }, {
+	        key: 'bindMultiSelectFromNYA',
+	        value: function bindMultiSelectFromNYA() {
+	            if (this.nyaSelect.temporyConfig.formlyOptions.length > 0) {
+	                for (var i = 0; i <= this.nyaSelect.temporyConfig.formlyOptions.length - 1; i++) {
+	                    var newOption = {
+	                        'option': this.nyaSelect.temporyConfig.formlyOptions[i].name,
+	                        'order': i,
+	                        'group': this.nyaSelect.temporyConfig.formlyOptions[i].group
+	                    };
+	                    this.multiSelectRowCollection.rows.push(newOption);
+	                    // this.nyaSelect.temporyConfig.multifilter.push(this.nyaSelect.temporyConfig.formlyOptions[i].group);
+	                }
+	                var filteredgroup = _.uniq(_.pluck(this.multiSelectRowCollection.rows, 'group'));
+	                angular.copy(filteredgroup, this.MultiSelectGroups.list);
+	            }
+	        }
+	    }, {
+	        key: 'addNewOptionRadio',
+	        value: function addNewOptionRadio() {
+	            var result = this.selectOptionManage.addNewOptionRadio(this.radioRowCollection, this.newOptionRadio.saisie);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: '\'' + this.newOptionRadio.saisie + '\' cannot be added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            this.newOptionRadio = {
+	                saisie: ''
+	            }; //reset input
+	        }
+	    }, {
+	        key: 'removeRadioRow',
+	        value: function removeRadioRow(index) {
+	            var result = this.selectOptionManage.removeOption(this.radioRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Delete was cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'upThisRadioRow',
+	        value: function upThisRadioRow(index) {
+	            var result = this.selectOptionManage.upthisOption(this.radioRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'downThisRadioRow',
+	        value: function downThisRadioRow(index) {
+	            var result = this.selectOptionManage.downthisOption(this.radioRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'addNewOptionBasicSelect',
+	        value: function addNewOptionBasicSelect() {
+	            var result = this.selectOptionManage.addNewOptionBasicSelect(this.basicSelectRowCollection, this.newOptionBasicSelect.saisie);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: '\'' + this.newOptionBasicSelect.saisie + '\' cannot be added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            this.newOptionBasicSelect = {
+	                saisie: ''
+	            }; //reset input
+	        }
+	    }, {
+	        key: 'removeRow',
+	        value: function removeRow(index) {
+	            var result = this.selectOptionManage.removeOption(this.basicSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Delete was cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'upThisRow',
+	        value: function upThisRow(index) {
+	            var result = this.selectOptionManage.upthisOption(this.basicSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'downThisRow',
+	        value: function downThisRow(index) {
+	            var result = this.selectOptionManage.downthisOption(this.basicSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'showGroupListToChoose',
+	        value: function showGroupListToChoose() {
+	            this.groupSelectGroupClick.showList = !this.groupSelectGroupClick.showList;
+	        }
+	    }, {
+	        key: 'addNewGroupToGroupedSelect',
+	        value: function addNewGroupToGroupedSelect() {
+	            if (this.newGroupGroupedSelect.saisie !== '') {
+	                for (var i = this.GroupedSelectGroups.list.length - 1; i >= 0; i--) {
+	                    if (this.GroupedSelectGroups.list[i] === this.newGroupGroupedSelect.saisie) {
+	                        this.toaster.pop({
+	                            type: 'warning',
+	                            timeout: 2000,
+	                            title: 'Group already exists',
+	                            body: 'No group added.',
+	                            showCloseButton: true
+	                        });
+	                    }
+	                }
+	                this.GroupedSelectGroups.list.push(this.newGroupGroupedSelect.saisie);
+	            } else {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: 'Not a valid group to add',
+	                    body: 'No group added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            this.newGroupGroupedSelect.saisie = '';
+	        }
+	    }, {
+	        key: 'addNewGroupToMultiSelect',
+	        value: function addNewGroupToMultiSelect() {
+	            var enable_push = false;
+	            if (this.newGroupMultiSelect.saisie !== '') {
+	                for (var _i = this.MultiSelectGroups.list.length - 1; _i >= 0; _i--) {
+	                    if (this.MultiSelectGroups.list[_i] === this.newGroupMultiSelect.saisie) {
+	                        this.toaster.pop({
+	                            type: 'warning',
+	                            timeout: 2000,
+	                            title: 'Group already exists',
+	                            body: 'No group added.',
+	                            showCloseButton: true
+	                        });
+	                    }
+	                }
+	                this.MultiSelectGroups.list.push(this.newGroupMultiSelect.saisie);
 	
-	        for (var i = 0; i < this.nyaSelect.temporyConfig.multifilter.length; i++) {
-	          if (this.nyaSelect.temporyConfig.multifilter[i].group == this.newGroupMultiSelect.saisie) {
-	            enable_push = true;
-	          }
+	                for (var i = 0; i < this.nyaSelect.temporyConfig.multifilter.length; i++) {
+	                    if (this.nyaSelect.temporyConfig.multifilter[i].group == this.newGroupMultiSelect.saisie) {
+	                        enable_push = true;
+	                    }
+	                }
+	                if (!enable_push) {
+	                    var cconst = {
+	                        'group': this.newGroupMultiSelect.saisie
+	                    };
+	                    this.nyaSelect.temporyConfig.multifilter.push(cconst);
+	                }
+	                console.log(this.nyaSelect.temporyConfig.multifilter);
+	            } else {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: 'Not a valid group to add',
+	                    body: 'No group added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            this.newGroupMultiSelect.saisie = '';
 	        }
-	        if (!enable_push) {
-	          var cconst = {
-	            'group': this.newGroupMultiSelect.saisie
-	          };
-	          this.nyaSelect.temporyConfig.multifilter.push(cconst);
+	    }, {
+	        key: 'addNewOptionGroupedSelect',
+	        value: function addNewOptionGroupedSelect() {
+	            var result = this.selectOptionManage.addNewOptionGroupedSelect(this.groupedSelectRowCollection, this.newOptionGroupedSelect.saisie, '');
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: '\'' + this.newOptionGroupedSelect.saisie + '\' cannot be added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            // bind nya : dont bind here $apply is not done fast enough
+	            // bindGroupedSelectToNya();
+	            // reset input
+	            this.newOptionGroupedSelect = {
+	                saisie: ''
+	            };
 	        }
-	        console.log(this.nyaSelect.temporyConfig.multifilter);
-	      } else {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: 'Not a valid group to add',
-	          body: 'No group added.',
-	          showCloseButton: true
-	        });
-	      }
-	      this.newGroupMultiSelect.saisie = '';
-	    }
-	  }, {
-	    key: 'addNewOptionGroupedSelect',
-	    value: function addNewOptionGroupedSelect() {
-	      var result = this.selectOptionManage.addNewOptionGroupedSelect(this.groupedSelectRowCollection, this.newOptionGroupedSelect.saisie, '');
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: '\'' + this.newOptionGroupedSelect.saisie + '\' cannot be added.',
-	          showCloseButton: true
-	        });
-	      }
-	      // bind nya : dont bind here $apply is not done fast enough
-	      // bindGroupedSelectToNya();
-	      // reset input
-	      this.newOptionGroupedSelect = {
-	        saisie: ''
-	      };
-	    }
-	  }, {
-	    key: 'addNewOptionMultiSelect',
-	    value: function addNewOptionMultiSelect() {
-	      // $('.js-example-basic-multiple').select2();
-	      console.log(this.multiSelectRowCollection);
-	      var result = this.selectOptionManage.addNewOptionMultiSelect(this.multiSelectRowCollection, this.newOptionMultiSelect.saisie, '');
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: '\'' + this.newOptionMultiSelect.saisie + '\' cannot be added.',
-	          showCloseButton: true
-	        });
-	      }
-	      // bind nya : dont bind here $apply is not done fast enough
-	      // bindGroupedSelectToNya();
-	      // reset input
-	      this.newOptionMultiSelect = {
-	        saisie: ''
-	      };
-	    }
-	  }, {
-	    key: 'removeGroupedSelectRow',
-	    value: function removeGroupedSelectRow(index) {
-	      var result = this.selectOptionManage.removeOption(this.groupedSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Delete was cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'removeMultiSelectRow',
-	    value: function removeMultiSelectRow(index) {
-	      var result = this.selectOptionManage.removeOption(this.multiSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Delete was cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'upThisGroupedSelectRow',
-	    value: function upThisGroupedSelectRow(index) {
-	      var result = this.selectOptionManage.upthisOption(this.groupedSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'upThisMultiSelectRow',
-	    value: function upThisMultiSelectRow(index) {
-	      var result = this.selectOptionManage.upthisOption(this.multiSelectRowCollection, index);
-	      // for(var i = 0; i < this.multiSelectRowCollection.rows.length; i++){
-	      //   this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
-	      // }
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'downThisGroupedSelectRow',
-	    value: function downThisGroupedSelectRow(index) {
-	      var result = this.selectOptionManage.downthisOption(this.groupedSelectRowCollection, index);
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'downThisMultiSelectRow',
-	    value: function downThisMultiSelectRow(index) {
-	      var result = this.selectOptionManage.downthisOption(this.multiSelectRowCollection, index);
-	      // for(var i = 0; i < this.multiSelectRowCollection.rows.length; i++){
-	      //   this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
-	      // }
-	      if (result.resultFlag === false) {
-	        this.toaster.pop({
-	          type: 'warning',
-	          timeout: 2000,
-	          title: result.details,
-	          body: 'Operation cancelled.',
-	          showCloseButton: true
-	        });
-	      }
-	    }
-	  }, {
-	    key: 'today',
-	    value: function today() {
-	      this.demodt.dt = new Date();
-	      this.demodttime.dt = new Date();
-	    }
-	  }, {
-	    key: 'clear',
-	    value: function clear() {
-	      this.demodt.dt = null;
-	      this.demodttime.dt = null;
-	    }
-	  }, {
-	    key: 'openDateTime',
-	    value: function openDateTime() {
-	      // this.demodt.opened = true;
-	      // this.demodttime.opened = true;
-	
-	      // $( ".input-group-addon" ).html( "<span class='input-group-addon'><i class='glyphicon glyphicon-calendar'></i></span> <input type='text' id='datetimepicker1' class='datetimepicker1 form-control ng-pristine ng-valid ng-isolate-scope ng-empty ng-valid-date ng-touched' data-date-format='dd/MM/yyyy hh:mm:ss' ng-model='$ctrl.demodttime.dt' is-open='$ctrl.demodttime.opened' datepicker-options='$ctrl.dateOptions' close-text='Close' ng-click='$ctrl.openDateTime()' style=''>" );
-	      console.log(this.demodttime);
-	      console.log($('.formly_3_datetimepicker_datetimepicker-1994127_1').datetimepicker());
-	      this.set_DateTime();
-	      console.log("This is openDateTime");
-	    }
-	  }, {
-	    key: 'set_DateTime',
-	    value: function set_DateTime() {
-	      $('.formly_3_datetimepicker_datetimepicker-1994127_1').datetimepicker();
-	    }
-	  }, {
-	    key: 'open',
-	    value: function open($event) {
-	      $event.preventDefault();
-	      $event.stopPropagation();
-	      this.set_DateTime();
-	      this.demodt.opened = true;
-	    }
-	  }, {
-	    key: 'dateOptionsInit',
-	    value: function dateOptionsInit() {
-	      return {
-	        formatYear: 'yy',
-	        startingDay: 1,
-	        showWeeks: true,
-	        initDate: null
-	      };
-	    }
-	  }, {
-	    key: 'dateTimeOptionsInit',
-	    value: function dateTimeOptionsInit() {
-	      return {
-	        formatYear: 'yy',
-	        startingDay: 1,
-	        showWeeks: true,
-	        initDate: null
-	      };
-	    }
-	  }, {
-	    key: 'selectThisControl',
-	    value: function selectThisControl(controlName) {
-	      this.nyaSelect.selectedControl = 'none';
-	      if (controlName == 'MultiSelect') {
-	        console.log("This is Multiselect");
-	        if ($('.js-example-basic-multiple').is(':visible') == false) {
-	          this.set_select2function();
+	    }, {
+	        key: 'addNewOptionMultiSelect',
+	        value: function addNewOptionMultiSelect() {
+	            // $('.js-example-basic-multiple').select2();
+	            console.log(this.multiSelectRowCollection);
+	            var result = this.selectOptionManage.addNewOptionMultiSelect(this.multiSelectRowCollection, this.newOptionMultiSelect.saisie, '');
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: '\'' + this.newOptionMultiSelect.saisie + '\' cannot be added.',
+	                    showCloseButton: true
+	                });
+	            }
+	            // bind nya : dont bind here $apply is not done fast enough
+	            // bindGroupedSelectToNya();
+	            // reset input
+	            this.newOptionMultiSelect = {
+	                saisie: ''
+	            };
 	        }
-	      }
-	      this.resetTemporyConfig();
-	      for (var i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
-	        if (this.nyaSelect.controls[i].id === controlName) this.nyaSelect.selectedControl = this.nyaSelect.controls[i].id;
-	      }
-	      if (this.nyaSelect.selectedControl === 'Date') {
-	        this.initDatePicker();
-	        console.log("TTTTT");
-	      }
-	      if (this.nyaSelect.selectedControl === 'DateTime') {
-	        this.initDateTimePicker();
-	      }
-	      if (controlName == 'RepeatSection') {
-	        console.log(this.fields);
-	        console.log("TSTSTSTSTS");
-	      }
-	    }
-	  }, {
-	    key: 'set_select2function',
-	    value: function set_select2function() {
-	      setTimeout(function () {
-	        $('.js-example-basic-multiple').select2();
-	        console.log("This part is call");
-	      }, 100);
-	    }
-	
-	    // selectThisControl(controlName) {
-	    //   this.nyaSelect.selectedControl = 'none';
-	    //   this.resetTemporyConfig();
-	    //   for (let i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
-	    //     if (this.nyaSelect.controls[i].id === controlName) this.nyaSelect.selectedControl = this.nyaSelect.controls[i].id;
-	    //   }
-	    //   if (this.nyaSelect.selectedControl === 'Date') this.initDatePicker();
-	    // }
-	
-	  }, {
-	    key: 'ok',
-	    value: function ok() {
-	      if (this.nyaSelect.selectedControl === 'BasicSelect') this.bindBasicSelectToNya();
-	      if (this.nyaSelect.selectedControl === 'GroupedSelect') this.bindGroupedSelectToNya();
-	      if (this.nyaSelect.selectedControl === 'MultiSelect') this.bindMultiSelectToNya();
-	      if (this.nyaSelect.selectedControl === 'Radio') this.bindRadioToNya();
-	      //save config to control
-	      this.$modalProxy.applyConfigToSelectedControl(this.nyaSelect);
-	      //return current model to parent controller :
-	      this.$modalInstance.close(this.nyaSelect);
-	    }
-	  }, {
-	    key: 'cancel',
-	    value: function cancel() {
-	      this.$modalInstance.dismiss('cancel');
-	    }
-	  }, {
-	    key: 'bindBasicSelectToNya',
-	    value: function bindBasicSelectToNya() {
-	      var resetNyASelectOptions = [];
-	      this.nyaSelect.temporyConfig.formlyOptions = resetNyASelectOptions;
-	      if (this.basicSelectRowCollection.rows.length > 0) {
-	        for (var i = 0; i <= this.basicSelectRowCollection.rows.length - 1; i++) {
-	          var newOption = {
-	            'name': this.basicSelectRowCollection.rows[i].option,
-	            'value': i,
-	            'group': ''
-	          };
-	          this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	    }, {
+	        key: 'removeGroupedSelectRow',
+	        value: function removeGroupedSelectRow(index) {
+	            var result = this.selectOptionManage.removeOption(this.groupedSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Delete was cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
 	        }
-	      }
-	    }
-	  }, {
-	    key: 'bindGroupedSelectToNya',
-	    value: function bindGroupedSelectToNya() {
-	      this.nyaSelect.temporyConfig.formlyOptions = [];
-	      for (var i = 0; i <= this.groupedSelectRowCollection.rows.length - 1; i++) {
-	        var newOption = {
-	          'name': this.groupedSelectRowCollection.rows[i].option,
-	          'value': i,
-	          'group': this.groupedSelectRowCollection.rows[i].group
-	        };
-	        this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
-	      }
-	    }
-	  }, {
-	    key: 'bindMultiSelectToNya',
-	    value: function bindMultiSelectToNya() {
-	      this.nyaSelect.temporyConfig.formlyOptions = [];
-	      for (var i = 0; i <= this.multiSelectRowCollection.rows.length - 1; i++) {
-	        var newOption = {
-	          'name': this.multiSelectRowCollection.rows[i].option,
-	          'value': i,
-	          'group': this.multiSelectRowCollection.rows[i].group
-	        };
-	        this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
-	        // this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
-	      }
-	    }
-	  }, {
-	    key: 'bindRadioToNya',
-	    value: function bindRadioToNya() {
-	      var resetNyASelectOptions = [];
-	      this.nyaSelect.temporyConfig.formlyOptions = resetNyASelectOptions;
-	      if (this.radioRowCollection.rows.length > 0) {
-	        for (var i = 0; i <= this.radioRowCollection.rows.length - 1; i++) {
-	          var newOption = {
-	            'name': this.radioRowCollection.rows[i].option,
-	            'value': i,
-	            'group': ''
-	          };
-	          this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	    }, {
+	        key: 'removeMultiSelectRow',
+	        value: function removeMultiSelectRow(index) {
+	            var result = this.selectOptionManage.removeOption(this.multiSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Delete was cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
 	        }
-	      }
-	    }
-	  }, {
-	    key: 'initDatePicker',
-	    value: function initDatePicker() {
-	      this.nyaSelect.temporyConfig.datepickerOptions = {
-	        format: this.demodt.formats[0]
-	      };
-	    }
-	  }, {
-	    key: 'initDateTimePicker',
-	    value: function initDateTimePicker() {
-	      var _this = this;
+	    }, {
+	        key: 'upThisGroupedSelectRow',
+	        value: function upThisGroupedSelectRow(index) {
+	            var result = this.selectOptionManage.upthisOption(this.groupedSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'upThisMultiSelectRow',
+	        value: function upThisMultiSelectRow(index) {
+	            var result = this.selectOptionManage.upthisOption(this.multiSelectRowCollection, index);
+	            // for(var i = 0; i < this.multiSelectRowCollection.rows.length; i++){
+	            //   this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
+	            // }
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'downThisGroupedSelectRow',
+	        value: function downThisGroupedSelectRow(index) {
+	            var result = this.selectOptionManage.downthisOption(this.groupedSelectRowCollection, index);
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'downThisMultiSelectRow',
+	        value: function downThisMultiSelectRow(index) {
+	            var result = this.selectOptionManage.downthisOption(this.multiSelectRowCollection, index);
+	            // for(var i = 0; i < this.multiSelectRowCollection.rows.length; i++){
+	            //   this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
+	            // }
+	            if (result.resultFlag === false) {
+	                this.toaster.pop({
+	                    type: 'warning',
+	                    timeout: 2000,
+	                    title: result.details,
+	                    body: 'Operation cancelled.',
+	                    showCloseButton: true
+	                });
+	            }
+	        }
+	    }, {
+	        key: 'today',
+	        value: function today() {
+	            this.demodt.dt = new Date();
+	            this.demodttime.dt = new Date();
+	        }
+	    }, {
+	        key: 'clear',
+	        value: function clear() {
+	            this.demodt.dt = null;
+	            this.demodttime.dt = null;
+	        }
+	    }, {
+	        key: 'openDateTime',
+	        value: function openDateTime() {
+	            // this.demodt.opened = true;
+	            // this.demodttime.opened = true;
+	            // $( ".input-group-addon" ).html( "<span class='input-group-addon'><i class='glyphicon glyphicon-calendar'></i></span> <input type='text' id='datetimepicker1' class='datetimepicker1 form-control ng-pristine ng-valid ng-isolate-scope ng-empty ng-valid-date ng-touched' data-date-format='dd/MM/yyyy hh:mm:ss' ng-model='$ctrl.demodttime.dt' is-open='$ctrl.demodttime.opened' datepicker-options='$ctrl.dateOptions' close-text='Close' ng-click='$ctrl.openDateTime()' style=''>" );
+	            console.log(this.demodttime);
+	            console.log($('.formly_3_datetimepicker_datetimepicker-1994127_1').datetimepicker());
+	            this.set_DateTime();
+	            console.log("This is openDateTime");
+	        }
+	    }, {
+	        key: 'set_DateTime',
+	        value: function set_DateTime() {
+	            $('.formly_3_datetimepicker_datetimepicker-1994127_1').datetimepicker();
+	        }
+	    }, {
+	        key: 'open',
+	        value: function open($event) {
+	            $event.preventDefault();
+	            $event.stopPropagation();
+	            this.set_DateTime();
+	            this.demodt.opened = true;
+	        }
+	    }, {
+	        key: 'dateOptionsInit',
+	        value: function dateOptionsInit() {
+	            return {
+	                formatYear: 'yy',
+	                startingDay: 1,
+	                showWeeks: true,
+	                initDate: null
+	            };
+	        }
+	    }, {
+	        key: 'dateTimeOptionsInit',
+	        value: function dateTimeOptionsInit() {
+	            return {
+	                formatYear: 'yy',
+	                startingDay: 1,
+	                showWeeks: true,
+	                initDate: null
+	            };
+	        }
+	    }, {
+	        key: 'selectThisControl',
+	        value: function selectThisControl(controlName) {
+	            this.nyaSelect.selectedControl = 'none';
+	            if (controlName == 'MultiSelect') {
+	                console.log("This is Multiselect");
+	                if ($('.js-example-basic-multiple').is(':visible') == false) {
+	                    this.set_select2function();
+	                }
+	            }
+	            this.resetTemporyConfig();
+	            for (var i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
+	                if (this.nyaSelect.controls[i].id === controlName) this.nyaSelect.selectedControl = this.nyaSelect.controls[i].id;
+	            }
+	            if (this.nyaSelect.selectedControl === 'Date') {
+	                this.initDatePicker();
+	                console.log("TTTTT");
+	            }
+	            if (this.nyaSelect.selectedControl === 'DateTime') {
+	                this.initDateTimePicker();
+	            }
+	            if (controlName == 'RepeatSection') {
+	                console.log(this.fields);
+	                console.log("TSTSTSTSTS");
+	            }
+	        }
+	    }, {
+	        key: 'set_select2function',
+	        value: function set_select2function() {
+	            setTimeout(function () {
+	                $('.js-example-basic-multiple').select2();
+	                console.log("This part is call");
+	            }, 100);
+	        }
 	
-	      console.log(this.demodttime.formats[0]);
-	      if ($(".formly_3_datetimepicker_datetimepicker-1994127_1").is(':visible')) {
-	        this.nyaSelect.temporyConfig.datepickerOptions = {
-	          format: this.demodttime.formats[0]
-	        };
-	        this.set_DateTime();
-	      } else {
-	        $(".formly_3_datetimepicker_datetimepicker-1994127_1").prop('disabled', false);
-	        setTimeout(function () {
-	          _this.initDateTimePicker();
-	        }, 10);
-	      }
-	    }
-	  }, {
-	    key: 'resetTemporyConfig',
-	    value: function resetTemporyConfig() {
-	      this.nyaSelectFiltered.temporyConfig = {
-	        formlyLabel: '',
-	        formlyRequired: false,
-	        formlyPlaceholder: '',
-	        formlyDescription: '',
-	        formlyOptions: []
-	      };
-	    }
-	  }]);
+	        // selectThisControl(controlName) {
+	        //   this.nyaSelect.selectedControl = 'none';
+	        //   this.resetTemporyConfig();
+	        //   for (let i = this.nyaSelect.controls.length - 1; i >= 0; i--) {
+	        //     if (this.nyaSelect.controls[i].id === controlName) this.nyaSelect.selectedControl = this.nyaSelect.controls[i].id;
+	        //   }
+	        //   if (this.nyaSelect.selectedControl === 'Date') this.initDatePicker();
+	        // }
 	
-	  return editControlModalController;
+	    }, {
+	        key: 'ok',
+	        value: function ok() {
+	            if (this.nyaSelect.selectedControl === 'BasicSelect') this.bindBasicSelectToNya();
+	            if (this.nyaSelect.selectedControl === 'GroupedSelect') this.bindGroupedSelectToNya();
+	            if (this.nyaSelect.selectedControl === 'MultiSelect') this.bindMultiSelectToNya();
+	            if (this.nyaSelect.selectedControl === 'Radio') this.bindRadioToNya();
+	            //save config to control
+	            this.$modalProxy.applyConfigToSelectedControl(this.nyaSelect);
+	            //return current model to parent controller :
+	            this.$modalInstance.close(this.nyaSelect);
+	        }
+	    }, {
+	        key: 'cancel',
+	        value: function cancel() {
+	            this.$modalInstance.dismiss('cancel');
+	        }
+	    }, {
+	        key: 'bindBasicSelectToNya',
+	        value: function bindBasicSelectToNya() {
+	            var resetNyASelectOptions = [];
+	            this.nyaSelect.temporyConfig.formlyOptions = resetNyASelectOptions;
+	            if (this.basicSelectRowCollection.rows.length > 0) {
+	                for (var i = 0; i <= this.basicSelectRowCollection.rows.length - 1; i++) {
+	                    var newOption = {
+	                        'name': this.basicSelectRowCollection.rows[i].option,
+	                        'value': i,
+	                        'group': ''
+	                    };
+	                    this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'bindGroupedSelectToNya',
+	        value: function bindGroupedSelectToNya() {
+	            this.nyaSelect.temporyConfig.formlyOptions = [];
+	            for (var i = 0; i <= this.groupedSelectRowCollection.rows.length - 1; i++) {
+	                var newOption = {
+	                    'name': this.groupedSelectRowCollection.rows[i].option,
+	                    'value': i,
+	                    'group': this.groupedSelectRowCollection.rows[i].group
+	                };
+	                this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	            }
+	        }
+	    }, {
+	        key: 'bindMultiSelectToNya',
+	        value: function bindMultiSelectToNya() {
+	            this.nyaSelect.temporyConfig.formlyOptions = [];
+	            for (var i = 0; i <= this.multiSelectRowCollection.rows.length - 1; i++) {
+	                var newOption = {
+	                    'name': this.multiSelectRowCollection.rows[i].option,
+	                    'value': i,
+	                    'group': this.multiSelectRowCollection.rows[i].group
+	                };
+	                this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	                // this.nyaSelect.temporyConfig.multifilter.push(this.multiSelectRowCollection.rows[i].group);
+	            }
+	        }
+	    }, {
+	        key: 'bindRadioToNya',
+	        value: function bindRadioToNya() {
+	            var resetNyASelectOptions = [];
+	            this.nyaSelect.temporyConfig.formlyOptions = resetNyASelectOptions;
+	            if (this.radioRowCollection.rows.length > 0) {
+	                for (var i = 0; i <= this.radioRowCollection.rows.length - 1; i++) {
+	                    var newOption = {
+	                        'name': this.radioRowCollection.rows[i].option,
+	                        'value': i,
+	                        'group': ''
+	                    };
+	                    this.nyaSelect.temporyConfig.formlyOptions.push(newOption);
+	                }
+	            }
+	        }
+	    }, {
+	        key: 'initDatePicker',
+	        value: function initDatePicker() {
+	            this.nyaSelect.temporyConfig.datepickerOptions = {
+	                format: this.demodt.formats[0]
+	            };
+	        }
+	    }, {
+	        key: 'initDateTimePicker',
+	        value: function initDateTimePicker() {
+	            var _this = this;
+	
+	            console.log(this.demodttime.formats[0]);
+	            if ($(".formly_3_datetimepicker_datetimepicker-1994127_1").is(':visible')) {
+	                this.nyaSelect.temporyConfig.datetimepickerOptions = {
+	                    format: this.demodttime.formats[0]
+	                };
+	                this.set_DateTime();
+	            } else {
+	                $(".formly_3_datetimepicker_datetimepicker-1994127_1").prop('disabled', false);
+	                setTimeout(function () {
+	                    _this.initDateTimePicker();
+	                }, 10);
+	            }
+	        }
+	    }, {
+	        key: 'resetTemporyConfig',
+	        value: function resetTemporyConfig() {
+	            this.nyaSelectFiltered.temporyConfig = {
+	                formlyLabel: '',
+	                formlyRequired: false,
+	                formlyPlaceholder: '',
+	                formlyDescription: '',
+	                formlyOptions: []
+	            };
+	        }
+	    }]);
+	
+	    return editControlModalController;
 	}();
 	
 	var toInject = ['$uibModalInstance', 'nyaSelect', 'toaster', 'selectOptionManage', '$modalProxy'];
@@ -7929,7 +7940,7 @@
 /* 47 */
 /***/ (function(module, exports) {
 
-	module.exports = "<section id=\"pageWfEdit\">\n  <div ng-init=\"\">\n    <div class=\"container\">\n      <section id=\"preview\">\n        <div id=\"preview-content\">\n          <div class=\"content-container\">\n            <!-- taoster alert -->\n            <toaster-container\n              toaster-options=\"{\n                'position-class': 'toast-top-full-width',\n                'extendedTimeout':500,\n                'timeOut':500\n              }\">\n            </toaster-container>\n            <uib-tabset justified=\"true\">\n              <uib-tab active=\"vm.tab.editTab.active\" heading=\"{{'EDIT_TAB' | translate}}\">\n                <div class=\"row\">\n                  <add-step-content configuration=\"vm.configuration\" \n                    add-newstep=\"vm.addNewstep()\" \n                    save-this-form=\"vm.saveThisForm()\"\n                    remove-this-step=\"vm.removeThisStep(index)\"\n                    right-this-step=\"vm.rightThisStep(index)\" \n                    left-this-step=\"vm.leftThisStep(index)\">\n                  </add-step-content>\n                </div>\n              </uib-tab>\n              <uib-tab active=\"vm.tab.previewTab.active\" ng-if=\"vm.tab.previewTab.tabVisible\" heading=\"{{'PREVIEW_TAB' | translate}}\">\n                <div class=\"panel panel-default\">\n                  <div class=\"panel-body\">\n                    <!-- formly here -->\n                    \n                      <wizard edit-mode=\"true\" indicators-position=\"top\" on-finish=\"finishedWizard()\">\n                        <wz-step wz-title=\"{{vm.configuration.steps[$index].title}}\" ng-repeat=\"step in vm.configuration.steps track by $index\">\n                          <formly-form model=\"vm.dataModel\" fields=\"vm.configuration.steps[$index].easyFormGeneratorModel.formlyFieldsModel\">\n                            <span class=\"pull-right\">\n                            <button class=\"btn btn-primary\" ng-if=\"$index > 0\" wz-previous>\n                                <i class=\"fa fa-arrow-left fa-2x pull-left\"></i>\n                                <span class=\"pull-right ng-binding\">\n                                  Previous\n                                </span>\n                            </button>\n                            <button class=\"btn btn-primary\" ng-if=\"$index < vm.configuration.steps.length - 1\" wz-next>\n                                <i class=\"fa fa-arrow-right fa-2x pull-left\"></i>\n                                <span class=\"pull-right ng-binding\">\n                                  Next\n                                </span>\n                              </button>\n                              <button class=\"btn btn-primary\" ng-if=\"$index == vm.configuration.steps.length - 1\" \n                              type=\"Submit\">            \n                              <i class=\"fa fa-save fa-2x pull-left\"></i>                    \n                                <span class=\"pull-right ng-binding\">\n                                  Submit\n                                </span>\n                              </button>\n                            </span>\n                          </formly-form>\n                        </wz-step>\n                      </wizard>\n                    \n                  </div>\n                </div>\n                <div ng-if=\"vm.tab.previewTab.modelsVisible\" class=\"panel panel-default\">\n                  <div class=\"panel-body\">\n                    <p>{{'DATA_MODEL' | translate}}</p>\n                    <pre>\n                      {{vm.dataModel | json}}\n                    </pre>\n                  </div>\n                </div>\n                <div ng-if=\"vm.tab.previewTab.modelsVisible\" class=\"panel panel-default\">\n                  <div class=\"panel-body\">\n                    <p>{{'FIELDS_MODEL' | translate}}</p>\n                    <pre>\n                      {{vm | json}}                      \n                    </pre>\n                  </div>\n                </div>\n              </uib-tab>\n            </uib-tabset>\n          </div>\n        </div>\n      </section>\n      <hr/>\n    </div>\n  </div>\n</section>"
+	module.exports = "<section id=\"pageWfEdit\">\r\n  <div ng-init=\"\">\r\n    <div class=\"container\">\r\n      <section id=\"preview\">\r\n        <div id=\"preview-content\">\r\n          <div class=\"content-container\">\r\n            <!-- taoster alert -->\r\n            <toaster-container\r\n              toaster-options=\"{\r\n                'position-class': 'toast-top-full-width',\r\n                'extendedTimeout':500,\r\n                'timeOut':500\r\n              }\">\r\n            </toaster-container>\r\n            <uib-tabset justified=\"true\">\r\n              <uib-tab active=\"vm.tab.editTab.active\" heading=\"{{'EDIT_TAB' | translate}}\">\r\n                <div class=\"row\">\r\n                  <add-step-content configuration=\"vm.configuration\" \r\n                    add-newstep=\"vm.addNewstep()\" \r\n                    save-this-form=\"vm.saveThisForm()\"\r\n                    remove-this-step=\"vm.removeThisStep(index)\"\r\n                    right-this-step=\"vm.rightThisStep(index)\" \r\n                    left-this-step=\"vm.leftThisStep(index)\">\r\n                  </add-step-content>\r\n                </div>\r\n              </uib-tab>\r\n              <uib-tab active=\"vm.tab.previewTab.active\" ng-if=\"vm.tab.previewTab.tabVisible\" heading=\"{{'PREVIEW_TAB' | translate}}\">\r\n                <div class=\"panel panel-default\">\r\n                  <div class=\"panel-body\">\r\n                    <!-- formly here -->\r\n                    \r\n                      <wizard edit-mode=\"true\" indicators-position=\"top\" on-finish=\"finishedWizard()\">\r\n                        <wz-step wz-title=\"{{vm.configuration.steps[$index].title}}\" ng-repeat=\"step in vm.configuration.steps track by $index\">\r\n                          <formly-form model=\"vm.dataModel\" fields=\"vm.configuration.steps[$index].easyFormGeneratorModel.formlyFieldsModel\">\r\n                            <span class=\"pull-right\">\r\n                            <button class=\"btn btn-primary\" ng-if=\"$index > 0\" wz-previous>\r\n                                <i class=\"fa fa-arrow-left fa-2x pull-left\"></i>\r\n                                <span class=\"pull-right ng-binding\">\r\n                                  Previous\r\n                                </span>\r\n                            </button>\r\n                            <button class=\"btn btn-primary\" ng-if=\"$index < vm.configuration.steps.length - 1\" wz-next>\r\n                                <i class=\"fa fa-arrow-right fa-2x pull-left\"></i>\r\n                                <span class=\"pull-right ng-binding\">\r\n                                  Next\r\n                                </span>\r\n                              </button>\r\n                              <button class=\"btn btn-primary\" ng-if=\"$index == vm.configuration.steps.length - 1\" \r\n                              type=\"Submit\">            \r\n                              <i class=\"fa fa-save fa-2x pull-left\"></i>                    \r\n                                <span class=\"pull-right ng-binding\">\r\n                                  Submit\r\n                                </span>\r\n                              </button>\r\n                            </span>\r\n                          </formly-form>\r\n                        </wz-step>\r\n                      </wizard>\r\n                    \r\n                  </div>\r\n                </div>\r\n                <div ng-if=\"vm.tab.previewTab.modelsVisible\" class=\"panel panel-default\">\r\n                  <div class=\"panel-body\">\r\n                    <p>{{'DATA_MODEL' | translate}}</p>\r\n                    <pre>\r\n                      {{vm.dataModel | json}}\r\n                    </pre>\r\n                  </div>\r\n                </div>\r\n                <div ng-if=\"vm.tab.previewTab.modelsVisible\" class=\"panel panel-default\">\r\n                  <div class=\"panel-body\">\r\n                    <p>{{'FIELDS_MODEL' | translate}}</p>\r\n                    <pre>\r\n                      {{vm | json}}                      \r\n                    </pre>\r\n                  </div>\r\n                </div>\r\n              </uib-tab>\r\n            </uib-tabset>\r\n          </div>\r\n        </div>\r\n      </section>\r\n      <hr/>\r\n    </div>\r\n  </div>\r\n</section>"
 
 /***/ }),
 /* 48 */
@@ -8359,7 +8370,7 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	exports.controls = exports.configs = undefined;
 	
@@ -8480,9 +8491,9 @@
 	var controls = [
 	// editBlankControl:
 	{
-	  name: _editBlankControl.EDIT_BLANK_CONTROL_COMPONENT,
-	  component: _editBlankControl.editBlankControlComponent,
-	  moduleName: _editBlankControl2.default.name
+	    name: _editBlankControl.EDIT_BLANK_CONTROL_COMPONENT,
+	    component: _editBlankControl.editBlankControlComponent,
+	    moduleName: _editBlankControl2.default.name
 	},
 	// editIpAdress:
 	//  {
@@ -8492,63 +8503,63 @@
 	// },
 	// editNumber:
 	{
-	  name: _editNumberInput.EDIT_NUMBERINPUT_COMPONENT,
-	  component: _editNumberInput.editNumberInputControlComponent,
-	  moduleName: _editNumberInput2.default.name
+	    name: _editNumberInput.EDIT_NUMBERINPUT_COMPONENT,
+	    component: _editNumberInput.editNumberInputControlComponent,
+	    moduleName: _editNumberInput2.default.name
 	},
 	// editMultiSelect:
 	{
-	  name: _editMultiSelect.EDIT_MULTI_SELECT_COMPONENT,
-	  component: _editMultiSelect.editMultiSelectControlComponent,
-	  moduleName: _editMultiSelect2.default.name
+	    name: _editMultiSelect.EDIT_MULTI_SELECT_COMPONENT,
+	    component: _editMultiSelect.editMultiSelectControlComponent,
+	    moduleName: _editMultiSelect2.default.name
 	},
 	// editDateTime:
 	{
-	  name: _editDateTime.EDIT_DATE_TIME_COMPONENT,
-	  component: _editDateTime.editDateTimeControlComponent,
-	  moduleName: _editDateTime2.default.name
+	    name: _editDateTime.EDIT_DATE_TIME_COMPONENT,
+	    component: _editDateTime.editDateTimeControlComponent,
+	    moduleName: _editDateTime2.default.name
 	},
 	// editRepeatSection:
 	{
-	  name: _editRepeatGroup.EDIT_REPEAT_SECTION_CONTROL_COMPONENT,
-	  component: _editRepeatGroup.editRepeatSectionControlComponent,
-	  moduleName: _editRepeatGroup2.default.name
+	    name: _editRepeatGroup.EDIT_REPEAT_SECTION_CONTROL_COMPONENT,
+	    component: _editRepeatGroup.editRepeatSectionControlComponent,
+	    moduleName: _editRepeatGroup2.default.name
 	},
 	// editDate:
 	{
-	  name: _editDate.EDIT_DATE_COMPONENT,
-	  component: _editDate.editDateControlComponent,
-	  moduleName: _editDate2.default.name
+	    name: _editDate.EDIT_DATE_COMPONENT,
+	    component: _editDate.editDateControlComponent,
+	    moduleName: _editDate2.default.name
 	},
 	// editBasicSelect:
 	{
-	  name: _editBasicSelect.EDIT_BASIC_SELECT_COMPONENT,
-	  component: _editBasicSelect.editBasicSelectControlComponent,
-	  moduleName: _editBasicSelect2.default.name
+	    name: _editBasicSelect.EDIT_BASIC_SELECT_COMPONENT,
+	    component: _editBasicSelect.editBasicSelectControlComponent,
+	    moduleName: _editBasicSelect2.default.name
 	},
 	// editGroupedSelect:
 	{
-	  name: _editGroupedSelect.EDIT_GROUPED_SELECT_COMPONENT,
-	  component: _editGroupedSelect.editGroupedSelectControlComponent,
-	  moduleName: _editGroupedSelect2.default.name
+	    name: _editGroupedSelect.EDIT_GROUPED_SELECT_COMPONENT,
+	    component: _editGroupedSelect.editGroupedSelectControlComponent,
+	    moduleName: _editGroupedSelect2.default.name
 	},
 	// editCheckBox:
 	{
-	  name: _editCheckBox.EDIT_CHECKBOX_COMPONENT,
-	  component: _editCheckBox.editCheckBoxControlComponent,
-	  moduleName: _editCheckBox2.default.name
+	    name: _editCheckBox.EDIT_CHECKBOX_COMPONENT,
+	    component: _editCheckBox.editCheckBoxControlComponent,
+	    moduleName: _editCheckBox2.default.name
 	},
 	// editEmail:
 	{
-	  name: _editEmail.EDIT_EMAIL_COMPONENT,
-	  component: _editEmail.editEmailControlComponent,
-	  moduleName: _editEmail2.default.name
+	    name: _editEmail.EDIT_EMAIL_COMPONENT,
+	    component: _editEmail.editEmailControlComponent,
+	    moduleName: _editEmail2.default.name
 	},
 	// editHeader:
 	{
-	  name: _editHeaderControl.EDIT_HEADER_CONTROL_COMPONENT,
-	  component: _editHeaderControl.editHeaderControlComponent,
-	  moduleName: _editHeaderControl2.default.name
+	    name: _editHeaderControl.EDIT_HEADER_CONTROL_COMPONENT,
+	    component: _editHeaderControl.editHeaderControlComponent,
+	    moduleName: _editHeaderControl2.default.name
 	},
 	// editPassword:
 	// {
@@ -8558,33 +8569,33 @@
 	// },
 	// editRadio:
 	{
-	  name: _editRadio.EDIT_RADIO_CONTROL_COMPONENT,
-	  component: _editRadio.editRadioControlComponent,
-	  moduleName: _editRadio2.default.name
+	    name: _editRadio.EDIT_RADIO_CONTROL_COMPONENT,
+	    component: _editRadio.editRadioControlComponent,
+	    moduleName: _editRadio2.default.name
 	},
 	// editRichTextEditor:
 	{
-	  name: _editRichTextEditor.EDIT_RICH_TEXT_EDITOR_COMPONENT,
-	  component: _editRichTextEditor.editRichTextEditorControlComponent,
-	  moduleName: _editRichTextEditor2.default.name
+	    name: _editRichTextEditor.EDIT_RICH_TEXT_EDITOR_COMPONENT,
+	    component: _editRichTextEditor.editRichTextEditorControlComponent,
+	    moduleName: _editRichTextEditor2.default.name
 	},
 	// editSubTitle:
 	{
-	  name: _editSubTitle.EDIT_SUBTITLE_CONTROL_COMPONENT,
-	  component: _editSubTitle.editSubTitleControlComponent,
-	  moduleName: _editSubTitle2.default.name
+	    name: _editSubTitle.EDIT_SUBTITLE_CONTROL_COMPONENT,
+	    component: _editSubTitle.editSubTitleControlComponent,
+	    moduleName: _editSubTitle2.default.name
 	},
 	// editTextArea:
 	{
-	  name: _editTextArea.EDIT_TEXTAREA_CONTROL_COMPONENT,
-	  component: _editTextArea.editTextareaControlComponent,
-	  moduleName: _editTextArea2.default.name
+	    name: _editTextArea.EDIT_TEXTAREA_CONTROL_COMPONENT,
+	    component: _editTextArea.editTextareaControlComponent,
+	    moduleName: _editTextArea2.default.name
 	},
 	// editTextInput:
 	{
-	  name: _editTextInput.EDIT_TEXTINPUT_CONTROL_COMPONENT,
-	  component: _editTextInput.editTextInputControlComponent,
-	  moduleName: _editTextInput2.default.name
+	    name: _editTextInput.EDIT_TEXTINPUT_CONTROL_COMPONENT,
+	    component: _editTextInput.editTextInputControlComponent,
+	    moduleName: _editTextInput2.default.name
 	}];
 	
 	exports.configs = configs;
@@ -8723,34 +8734,34 @@
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 	var MultiSelectConfig = exports.MultiSelectConfig = {
-	  id: 'MultiSelect',
-	  name: 'Multi Select',
-	  subtitle: 'Grouped Select',
-	  options: [],
-	  group: 'Select',
-	  formlyType: 'groupedSelect',
-	  formlySubtype: '',
-	  formlyLabel: '',
-	  formlyRequired: false,
-	  formlyDescription: '',
-	  formlyOptions: [],
-	  formlyExpressionProperties: {},
-	  formlyValidators: {},
-	  formlyValidation: {
-	    messages: {
-	      required: function required(viewValue, modelValue, scope) {
-	        //return a required validation message :
-	        //-> '<label as name> is required '
-	        //-> or if not exists or empty just 'this field is required'
-	        var defaultReturnMsg = 'this Multi Select field is required';
-	        var returnMsg = typeof scope.to.label !== 'undefined' ? scope.to.label !== '' ? scope.to.label + ' is required' : defaultReturnMsg : defaultReturnMsg;
-	        return returnMsg;
-	      }
+	    id: 'MultiSelect',
+	    name: 'Multi Select',
+	    subtitle: 'Multi Select',
+	    options: [],
+	    group: 'Select',
+	    formlyType: 'multiSelect',
+	    formlySubtype: '',
+	    formlyLabel: '',
+	    formlyRequired: false,
+	    formlyDescription: '',
+	    formlyOptions: [],
+	    formlyExpressionProperties: {},
+	    formlyValidators: {},
+	    formlyValidation: {
+	        messages: {
+	            required: function required(viewValue, modelValue, scope) {
+	                //return a required validation message :
+	                //-> '<label as name> is required '
+	                //-> or if not exists or empty just 'this field is required'
+	                var defaultReturnMsg = 'this Multi Select field is required';
+	                var returnMsg = typeof scope.to.label !== 'undefined' ? scope.to.label !== '' ? scope.to.label + ' is required' : defaultReturnMsg : defaultReturnMsg;
+	                return returnMsg;
+	            }
+	        }
 	    }
-	  }
 	};
 
 /***/ }),
@@ -8865,7 +8876,7 @@
 	  formlyRequired: false,
 	  formlyDescription: '',
 	  formlyOptions: [],
-	  datetiempickerOptions: { format: 'dd/MM/yyyy hh:mm:ss' },
+	  datetimepickerOptions: { format: 'dd/MM/yyyy hh:mm:ss' },
 	  formlyExpressionProperties: {},
 	  formlyValidators: {},
 	  formlyValidation: {
